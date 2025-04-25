@@ -7,10 +7,10 @@
 #include <unistd.h>
 
 // structs
-typedef struct main
+typedef struct s_info
 {
-    /* data */
-} kolshe;
+    int philos;
+} t_info;
 
 // prototypes
 
