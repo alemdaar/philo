@@ -4,6 +4,8 @@ int is_number(char *str)
 {
     int i;
     i = 0;
+	if (!str[0])
+		why_exit("one of the args is empty\n", 1);
     if (str[i] == '+' || str[i] == '-')
         i++;
     if (!str[i])
@@ -17,9 +19,19 @@ int is_number(char *str)
     return 1;
 }
 
-void set_up(char av, t_info *dainfo)
+void set_info(t_info *dainfo, long long int nb[5])
 {
-
+	// number_of_philosophers time_to_die time_to_eat time_to_sleep
+    // [number_of_times_each_philosopher_must_eat] (optional)
+	dainfo->number_of_philosophers = nb[0];
+	dainfo->time_to_die = nb[1];
+	dainfo->time_to_eat = nb[2];
+	dainfo->time_to_sleep = nb[3];
+	if (dainfo->nb_of_inputs == 5)
+		dainfo->number_of_times_each_philosopher_must_eat = nb[4];
+	dainfo->fork = dainfo->number_of_philosophers;
+	t_philo philos[dainfo->number_of_philosophers];
+	dainfo->philos = philos;
 }
 
 void    check_input(int ac, char **av, t_info *dainfo)
@@ -27,25 +39,50 @@ void    check_input(int ac, char **av, t_info *dainfo)
 	int i;
 	int r;
 	i = 1;
-	int nb[ac - 1];
-	while (i < ac - 1)
+	long long int nb[5];
+	while (i < ac)
 	{
+		printf ("input %d: %s\n", i, av[i]);
 		r = is_number(av[i]);
 		if (r == 0)
-		    why_exit("the inpit is not a number\n", 1);
-		nb[i] = myatoia(av[i]);
-		if (nb[i] == 0 && i != 5)
+		    why_exit("the input is not a number\n", 1);
+		nb[i - 1] = myatoi(av[i]);
+		printf ("nb :     %lld\n", nb[i - 1]);
+		if (i != 5 && nb[i - 1] == 0)
 		    why_exit("one of the inputs is 0\n", 1);
 		i++;
 	}
 	if (ac == 5)
 		dainfo->number_of_times_each_philosopher_must_eat = -1;
 	dainfo->nb_of_inputs = ac - 1;
-	set_up(av, dainfo, nb);
+	set_info(dainfo, nb);
 	return;
 }
 
-void	parcing(int ac, char **av, t_info *dainfo)
+void set_philos(t_info *dainfo, t_philo *philo)
 {
-	check_input(av, ac, dainfo);
+	int	i;
+
+	i = 0;
+	t_philo *tmp_philo;
+	while (i < dainfo->number_of_philosophers)
+	{
+		tmp_philo = &dainfo->philos[i];
+		tmp_philo->id = i;
+		i++;
+	}
+	i = 0;
+    t_philo tmp;
+    while (i < dainfo->number_of_philosophers)
+    {
+        tmp = dainfo->philos[i];
+        printf ("id %d is %d\n", i, tmp.id);
+        i++;
+    }
+}
+
+void	parcing(int ac, char **av, t_info *dainfo, t_philo *philo)
+{
+	check_input(ac, av, dainfo);
+	set_philos(dainfo, philo);
 }
