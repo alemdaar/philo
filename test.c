@@ -1,49 +1,87 @@
 #include <stdio.h>
 #include <pthread.h>
-#include <unistd.h> // for sleep()
+#include <unistd.h>
 
-// Function that will be executed by the first thread
-void* thread_function1(void* arg) {
-    for (int i = 0; i < 5; i++) {
-        printf("Thread 1: Message %d\n", i+1);
-        sleep(1); // Sleep for 1 second
-    }
-    return NULL;
-}
+pthread_mutex_t mutex;
+// size_t mails = 0;
 
-// Function that will be executed by the second thread
-void* thread_function2(void* arg) {
-    for (int i = 0; i < 5; i++) {
-        printf("Thread 2: Message %d\n", i+1);
-        sleep(2); // Sleep for 2 seconds
+void* routine(void* arg) {
+    // int c = 0;
+    int *hold = (int *)arg;
+    printf ("before : %d\n", *hold);
+    // printf ("entered\n");
+    for (size_t i = 0; i < 10000000; i++) {
+        // pthread_mutex_lock(&mutex);
+        *hold+=1;
+        fprintf (stdout, "after : %d\n", *hold);
+        while (1);
+        // pthread_mutex_unlock(&mutex);
+        // if (c == 0) {
+        //     printf ("strated\n");
+        //     c = 1;
+        // }
     }
+    printf ("here\n");
+    printf ("finished\n");
     return NULL;
 }
 
 int main() {
-    pthread_t thread1, thread2;
-    
-    printf("Main: Creating threads...\n");
-    
-    // Create thread 1
-    if (pthread_create(&thread1, NULL, thread_function1, NULL) != 0) {
+    pthread_t p1, p2, p3, p4, p5, p6;
+    size_t mails = 0;
+    // int i = 0;
+    pthread_mutex_init(&mutex, NULL);
+    if (pthread_create(&p1, NULL, routine, &mails) != 0) {
         fprintf(stderr, "Error creating thread 1\n");
         return 1;
     }
-    
-    // Create thread 2
-    if (pthread_create(&thread2, NULL, thread_function2, NULL) != 0) {
+    if (pthread_create(&p2, NULL, routine, &mails) != 0) {
         fprintf(stderr, "Error creating thread 2\n");
         return 1;
     }
-    
-    printf("Main: Threads created. Waiting for them to finish...\n");
-    
-    // Wait for both threads to finish
-    pthread_join(thread1, NULL);
-    pthread_join(thread2, NULL);
-    
-    printf("Main: Both threads have finished.\n");
-    
+    if (pthread_create(&p3, NULL, routine, &mails) != 0) {
+        fprintf(stderr, "Error creating thread 2\n");
+        return 1;
+    }
+    if (pthread_create(&p4, NULL, routine, &mails) != 0) {
+        fprintf(stderr, "Error creating thread 2\n");
+        return 1;
+    }
+    if (pthread_create(&p5, NULL, routine, &mails) != 0) {
+        fprintf(stderr, "Error creating thread 2\n");
+        return 1;
+    }
+    if (pthread_create(&p6, NULL, routine, &mails) != 0) {
+        fprintf(stderr, "Error creating thread 2\n");
+        return 1;
+    }
+
+    if (pthread_join(p1, NULL) != 0) {
+        printf ("join 1 failed\n");
+        return 1;
+    }
+    if (pthread_join(p2, NULL) != 0) {
+        printf ("join 2 failed\n");
+        return 1;
+    }
+    if (pthread_join(p3, NULL) != 0) {
+        printf ("join 2 failed\n");
+        return 1;
+    }
+    if (pthread_join(p4, NULL) != 0) {
+        printf ("join 2 failed\n");
+        return 1;
+    }
+    if (pthread_join(p5, NULL) != 0) {
+        printf ("join 2 failed\n");
+        return 1;
+    }
+    if (pthread_join(p6, NULL) != 0) {
+        printf ("join 2 failed\n");
+        return 1;
+    }
+
+    pthread_mutex_destroy(&mutex);
+    printf ("mails : %zu\n", mails);
     return 0;
 }

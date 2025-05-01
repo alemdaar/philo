@@ -23,6 +23,6 @@ int main (int ac, char **av)
         printf ("id %d is %d\n", i, tmp.id);
         i++;
     }
-    // algo();
+    algo();
 
 }
