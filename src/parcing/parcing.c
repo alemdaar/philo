@@ -19,7 +19,7 @@ int is_number(char *str)
     return 1;
 }
 
-void set_info(t_info *dainfo, long long int nb[5])
+int set_info(t_info *dainfo, long long int nb[5])
 {
 	// number_of_philosophers time_to_die time_to_eat time_to_sleep
     // [number_of_times_each_philosopher_must_eat] (optional)
@@ -29,9 +29,9 @@ void set_info(t_info *dainfo, long long int nb[5])
 	dainfo->time_to_sleep = nb[3];
 	if (dainfo->nb_of_inputs == 5)
 		dainfo->number_of_times_each_philosopher_must_eat = nb[4];
-	dainfo->fork = dainfo->number_of_philosophers;
-	t_philo philos[dainfo->number_of_philosophers];
-	dainfo->philos = philos;
+	dainfo->philos = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
+	if (!dainfo->philos)
+		return (free_all(dainfo->philos), why_exit("memory allocation failed\n", 1), FAILED);
 }
 
 void    check_input(int ac, char **av, t_info *dainfo)
@@ -69,14 +69,24 @@ void set_philos(t_info *dainfo, t_philo *philo)
 	{
 		tmp_philo = &dainfo->philos[i];
 		tmp_philo->id = i;
+        printf ("id %d is %d---------- address : %p\n", i, tmp_philo->id, tmp_philo);
 		i++;
 	}
 	i = 0;
-    t_philo tmp;
+	while (i < dainfo->number_of_philosophers)
+	{
+		tmp_philo = &dainfo->philos[i];
+        printf ("id %d is %d---------- address : %p\n", i, tmp_philo->id, tmp_philo);
+		i++;
+	}
+	tmp_philo = &dainfo->philos[4];
+    printf ("id %d is %d,----------+++++++\n", 4, tmp_philo->id);
+	i = 0;
+    t_philo *tmp;
     while (i < dainfo->number_of_philosophers)
     {
-        tmp = dainfo->philos[i];
-        printf ("id %d is %d\n", i, tmp.id);
+        tmp = &dainfo->philos[i];
+        printf ("id %d is %d,    address : %p\n", i, tmp->id, tmp);
         i++;
     }
 }
@@ -84,5 +94,4 @@ void set_philos(t_info *dainfo, t_philo *philo)
 void	parcing(int ac, char **av, t_info *dainfo, t_philo *philo)
 {
 	check_input(ac, av, dainfo);
-	set_philos(dainfo, philo);
 }

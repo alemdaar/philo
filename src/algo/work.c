@@ -1,18 +1,43 @@
-#include "../../header.h"
+// #include "../../header.h"
 
-void algo()
-{
-    int r;
-    while (1)
-    {
-        r = pthread_create(&philo, NULL, thread_function2, NULL);
-        if ( != 0) {
-            fprintf(stderr, "Error creating thread 2\n");
-            return 1;
-        }
-        printf("Main: Threads created. Waiting for them to finish...\n");
+// void run_th(t_info *dainfo)
+// {
+//     int r;
+//     int i;
 
-        // Wait for both threads to finish
-        pthread_join(thread1, NULL);
-    }
-}
+// 	i = 0;
+// 	while (i < dainfo->number_of_philosophers)
+// 	{
+//     	r = pthread_create(dainfo->, NULL, itstime, NULL);
+//     	if (r != 0) {
+//     	    fprintf(stderr, "Error creating thread 2\n");
+//     	    return 1;
+//     	}
+//     	printf("Main: Threads created. Waiting for them to finish...\n");
+//     	r = pthread_join(philo, NULL);
+//     	if (r != 0) {
+//     	    fprintf(stderr, "Error creating thread 2\n");
+//     	    return 1;
+//     	}
+// 	}
+// }
+
+// void set_forks(t_info *dainfo)
+// {
+
+// }
+
+// void algo(t_info *dainfo)
+// {
+// 	int i;
+
+// 	i = 0;
+//     while (1)
+//     {
+//         set_forks(dainfo);
+//         run_th(dainfo);
+//     }
+// 	i++;
+// 	if (i == 2)
+// 		i = 0;
+// }
