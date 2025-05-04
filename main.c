@@ -9,20 +9,23 @@ int main (int ac, char **av)
     if (ac != 5 && ac != 6)
         why_exit("number of args is not valid\n", 0);
     parcing(ac, av, &dainfo, &philo);
-    set_philos(&dainfo, &philo);
     printf ("philos : %d\n", dainfo.number_of_philosophers);
     printf ("die : %d\n", dainfo.time_to_die);
     printf ("eat : %d\n", dainfo.time_to_eat);
     printf ("sleep : %d\n", dainfo.time_to_sleep);
     printf ("meals : %d\n", dainfo.number_of_times_each_philosopher_must_eat);
     int i = 0;
-    t_philo tmp;
+    t_philo *tmp;
     while (i < dainfo.number_of_philosophers)
     {
-        tmp = dainfo.philos[i];
-        printf ("id %d is %d\n", i, tmp.id);
+        tmp = &dainfo.philos[i];
+        // printf ("id %d is %d\n", i, tmp->id);
+        printf ("id %d is %d\n", i, tmp->id);
+        printf ("forks %d and %d\n", tmp->fork[0], tmp->fork[1]);
+        printf ("fork %d is %d\n", i, dainfo.forks[i]);
         i++;
     }
+    printf ("pair started with : %d\n", dainfo.pair);
+    printf ("checked main\n");
     // algo();
-
 }

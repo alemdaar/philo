@@ -1,4 +1,4 @@
-	.section	__TEXT,__text,regular,pure_instructions
+`	.section	__TEXT,__text,regular,pure_instructions
 	.build_version macos, 10, 15	sdk_version 10, 15
 	.globl	_routine                ## -- Begin function routine
 	.p2align	4, 0x90

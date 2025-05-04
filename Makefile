@@ -6,3 +6,9 @@ SRC = main.c src/errors/*.c src/parcing/*.c src/tools/*.c
 
 all:
 	${CC} -g -pthread ${SRC} -o ${NAME}
+
+# clean:
+#	rm -f ${NAME}
+fclean: #fclean
+	rm -f ${NAME}
+re: fclean all
