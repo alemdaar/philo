@@ -16,9 +16,16 @@
 #define FAILED 1
 #define LEFT 1
 #define RIGHT 0
+#define PAIR 0
+#define UNPAIR 1
+#define STDOUT 1
+#define STDERR 2
+#define NOT !=
+#define IS ==
+#define OR ||
 
 // structs
-// typedef struct s_forks
+// typedef struct messages
 // {
 //     int *left;
 //     int *right;
@@ -41,8 +48,11 @@ typedef struct s_info
     int number_of_times_each_philosopher_must_eat;
     int nb_of_inputs;
     int pair;
-    int *forks;
+    pthread_mutex_t *forks;
+    pthread_mutex_t lock;
     t_philo *philos;
+    t_philo *current_philo;
+    long long int tmp_nb[5];
 } t_info;
 
 
@@ -52,12 +62,20 @@ typedef struct s_info
 void why_exit(char *str, int status);
 // parcing
 int is_number(char *str);
-int set_info(t_info *dainfo, long long int nb[5]);
+int set_info(t_info *dainfo);
 void    check_input(int ac, char **av, t_info *dainfo);
 void set_philos(t_info *dainfo, t_philo *philo);
-void	parcing(int ac, char **av, t_info *dainfo, t_philo *philo);
+void    parcing(int ac, char **av, t_info *dainfo);
+void	init(int ac, char **av, t_info *dainfo, t_philo *philo);
 // tools
 int mystrlen(char *str);
 int long long myatoi(char *str);
+void algo(t_info *dainfo, t_philo *philo);
+int prepare_philos(t_philo *philo, t_info* dainfo);
+int wait_thread(t_info *dainfo);
+int make_thread(t_info* dainfo);
+void *datask(void *arg);
+void pair_condition(t_info *dainfo);
+void output(char *str, int fd);
 
 #endif

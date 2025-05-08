@@ -8,7 +8,8 @@ int main (int ac, char **av)
     t_philo philo;
     if (ac != 5 && ac != 6)
         why_exit("number of args is not valid\n", 0);
-    parcing(ac, av, &dainfo, &philo);
+    parcing(ac, av, &dainfo);
+    init(ac, av, &dainfo, &philo);
     printf ("philos : %d\n", dainfo.number_of_philosophers);
     printf ("die : %d\n", dainfo.time_to_die);
     printf ("eat : %d\n", dainfo.time_to_eat);
@@ -21,11 +22,11 @@ int main (int ac, char **av)
         tmp = &dainfo.philos[i];
         // printf ("id %d is %d\n", i, tmp->id);
         printf ("id %d is %d\n", i, tmp->id);
-        printf ("forks %d and %d\n", tmp->fork[0], tmp->fork[1]);
-        printf ("fork %d is %d\n", i, dainfo.forks[i]);
         i++;
     }
     printf ("pair started with : %d\n", dainfo.pair);
     printf ("checked main\n");
-    // algo();
+    algo(&dainfo, &philo);
+    pthread_mutex_destroy(&dainfo.lock);
+    // clean(); pthread_mutex_destroy(&mutex);
 }
