@@ -83,41 +83,7 @@ void set_philos(t_info *dainfo, t_philo *philo)
         // printf ("id %d is %d\n", i, tmp_philo->id);
 		i++;
 	}
-    // printf ("intial\n");
-	// i = 0;
-	// while (i < dainfo->number_of_philosophers)
-	// {
-	// 	tmp_philo = &dainfo->philos[i];
-    //     printf ("id %d is %d---------- address : %p\n", i, tmp_philo->id, tmp_philo);
-	// 	i++;
-	// }
-    // printf ("checked same ptr\n");
-	// tmp_philo = &dainfo->philos[4];
-    // printf ("id %d is %d,----------+++++++\n", 4, tmp_philo->id);
-	// i = 0;
-    // t_philo *tmp;
-    // while (i < dainfo->number_of_philosophers)
-    // {
-    //     tmp = &dainfo->philos[i];
-    //     printf ("id %d is %d,    address : %p\n", i, tmp->id, tmp);
-    //     i++;
-    // }
-	// printf ("checked another ptr\n");
 }
-
-// int set_philos_forks(t_info *dainfo, t_philo *philo)
-// {
-// 	int	i;
-// 	t_philo *tmp_philo;
-
-// 	i = 0;
-// 	while (i < dainfo->number_of_philosophers)
-// 	{
-// 		tmp_philo = &philo[i];
-
-// 		i++;
-// 	}
-// }
 
 void	init(int ac, char **av, t_info *dainfo, t_philo *philo)
 {
