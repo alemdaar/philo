@@ -27,6 +27,6 @@ int main (int ac, char **av)
     // printf ("pair started with : %d\n", dainfo.pair);
     // printf ("checked main\n");
     algo(&dainfo, &philo);
-    pthread_mutex_destroy(&dainfo.lock);
+    // pthread_mutex_destroy(&dainfo.lock);
     // clean(); pthread_mutex_destroy(&mutex);
 }

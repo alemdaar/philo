@@ -21,11 +21,16 @@ int is_number(char *str)
 
 int set_info(t_info *dainfo)
 {
-	if (pthread_mutex_init(&dainfo->lock, NULL) NOT SUCCESSFUL)
+	int i = 0;
+	while (i < dainfo->number_of_philosophers)
 	{
-		// free_all();
-        why_exit("Failed to initialize mutex.\n", 1);
-    }
+		if (pthread_mutex_init(&dainfo->forks[i], NULL) NOT SUCCESSFUL)
+		{
+			// free_all();
+    	    why_exit("Failed to initialize mutex.\n", 1);
+    	}
+		i++;
+	}
 	dainfo->number_of_philosophers = dainfo->tmp_nb[0];
 	dainfo->time_to_die = dainfo->tmp_nb[1];
 	dainfo->time_to_eat = dainfo->tmp_nb[2];

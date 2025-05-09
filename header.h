@@ -35,6 +35,7 @@ typedef struct s_philo
 {
     int id;
     pthread_t thread;
+    pthread_t lock;
     int count_meals;
     int fork[2];
 }   t_philo;
@@ -49,7 +50,7 @@ typedef struct s_info
     int nb_of_inputs;
     int pair;
     pthread_mutex_t *forks;
-    pthread_mutex_t lock;
+    // pthread_mutex_t lock;
     t_philo *philos;
     t_philo *current_philo;
     long long int tmp_nb[5];
