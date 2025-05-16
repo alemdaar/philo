@@ -19,34 +19,42 @@ int is_number(char *str)
     return 1;
 }
 
-int set_info(t_info *dainfo)
+void set_mutex(t_info *dainfo)
 {
 	int i = 0;
-	while (i < dainfo->number_of_philosophers)
+	int r;
+	while (i++ < dainfo->number_of_philosophers)
 	{
-		if (pthread_mutex_init(&dainfo->forks[i], NULL) NOT SUCCESSFUL)
-		{
-			// free_all();
+		r = pthread_mutex_init(&dainfo->forks[i], NULL);
+		if (r NOT SUCCESSFUL)
     	    why_exit("Failed to initialize mutex.\n", 1);
-    	}
-		i++;
 	}
+}
+
+int set_info(t_info *dainfo, t_philo **philo)
+{
 	dainfo->number_of_philosophers = dainfo->tmp_nb[0];
 	dainfo->time_to_die = dainfo->tmp_nb[1];
 	dainfo->time_to_eat = dainfo->tmp_nb[2];
 	dainfo->time_to_sleep = dainfo->tmp_nb[3];
+
 	if (dainfo->nb_of_inputs == 5)
 		dainfo->number_of_times_each_philosopher_must_eat = dainfo->tmp_nb[4];
+
 	dainfo->pair = 0;
-	dainfo->forks = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
+
+	dainfo->forks = malloc (sizeof(pthread_mutex_t) * dainfo->number_of_philosophers);
 	if (!dainfo->forks)
 		return (why_exit("memory allocation failed\n", 1), FAILED);
-	dainfo->philos = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
-	if (!dainfo->philos)
+
+	philo[0] = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
+	if (!philo[0])
 	{
-		// free_all(dainfo->philos);
+		// free_all(dainfo->forks);
 		return (why_exit("memory allocation failed\n", 1), FAILED);
 	}
+
+	dainfo->philos = philo[0];
 	return 0;
 }
 
@@ -73,25 +81,27 @@ void    parcing(int ac, char **av, t_info *dainfo)
 	return;
 }
 
-void set_philos(t_info *dainfo, t_philo *philo)
+void set_philos(t_info *dainfo, t_philo **philo)
 {
 	int	i;
 
 	i = 0;
-	t_philo *tmp_philo;
+	// t_philo *tmp_philo;
 	while (i < dainfo->number_of_philosophers)
 	{
-		tmp_philo = &dainfo->philos[i];
-		tmp_philo->id = i + 1;
-		tmp_philo->fork[RIGHT] = -1;
-		tmp_philo->fork[LEFT] = -1;
-        // printf ("id %d is %d\n", i, tmp_philo->id);
+		// tmp_philo = &dainfo->philos[i];
+		philo[0][i].id = i + 1;
+		philo[0][i].fork[RIGHT] = -1;
+		philo[0][i].fork[LEFT] = -1;
+		philo[0][i].dainfo = dainfo;
+        printf ("id %d is %d ----- 2\n", i, philo[0][i].id);
 		i++;
 	}
 }
 
-void	init(int ac, char **av, t_info *dainfo, t_philo *philo)
+void	init(int ac, char **av, t_info *dainfo, t_philo **philo)
 {
-	set_info(dainfo);
+	set_mutex(dainfo);
+	set_info(dainfo, philo);
 	set_philos(dainfo, philo);
 }

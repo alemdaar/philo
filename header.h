@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 // macros
 #define TAKEN 1
@@ -24,13 +25,8 @@
 #define IS ==
 #define OR ||
 
-// structs
-// typedef struct messages
-// {
-//     int *left;
-//     int *right;
-// }   t_forks;
-
+// struct
+typedef struct s_info t_info;
 typedef struct s_philo
 {
     int id;
@@ -38,6 +34,7 @@ typedef struct s_philo
     pthread_t lock;
     int count_meals;
     int fork[2];
+    t_info *dainfo;
 }   t_philo;
 
 typedef struct s_info
@@ -52,7 +49,6 @@ typedef struct s_info
     pthread_mutex_t *forks;
     // pthread_mutex_t lock;
     t_philo *philos;
-    t_philo *current_philo;
     long long int tmp_nb[5];
 } t_info;
 
@@ -63,18 +59,17 @@ typedef struct s_info
 void why_exit(char *str, int status);
 // parcing
 int is_number(char *str);
-int set_info(t_info *dainfo);
+int set_info(t_info *dainfo, t_philo **philo);
 void    check_input(int ac, char **av, t_info *dainfo);
-void set_philos(t_info *dainfo, t_philo *philo);
+void set_philos(t_info *dainfo, t_philo **philo);
 void    parcing(int ac, char **av, t_info *dainfo);
-void	init(int ac, char **av, t_info *dainfo, t_philo *philo);
+void	init(int ac, char **av, t_info *dainfo, t_philo **philo);
+void    set_mutex(t_info *dainfo);
 // tools
 int mystrlen(char *str);
 int long long myatoi(char *str);
 void algo(t_info *dainfo, t_philo *philo);
 int prepare_philos(t_philo *philo, t_info* dainfo);
-// int wait_thread(t_info *dainfo);
-// int make_thread(t_info* dainfo);
 void *datask(void *arg);
 void pair_condition(t_info *dainfo);
 void output(char *str, int fd);
