@@ -24,6 +24,7 @@
 #define NOT !=
 #define IS ==
 #define OR ||
+#define DEAD
 
 // struct
 typedef struct s_info t_info;
@@ -69,8 +70,7 @@ void    set_mutex(t_info *dainfo);
 // tools
 int mystrlen(char *str);
 int long long myatoi(char *str);
-void algo(t_info *dainfo, t_philo *philo);
-int prepare_philos(t_philo *philo, t_info* dainfo);
+int algo(t_philo *philo, t_info* dainfo);
 void *datask(void *arg);
 void pair_condition(t_info *dainfo);
 void output(char *str, int fd);

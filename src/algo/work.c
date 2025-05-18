@@ -8,25 +8,20 @@ void output(char *str, int fd)
 void started_timimg(t_info *dainfo)
 {
 	struct timeval current_time;
-	gettimeofday(&current_time, NULL);
-	dainfo->starting_time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	if (gettimeofday(&current_time, NULL) == -1)
+		output("gettimeofday failed\n", 2);
+	dainfo->starting_time = (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
+	return ;
 }
 
 suseconds_t get_time(suseconds_t start)
 {
 	struct timeval current_time;
-	gettimeofday(&current_time, NULL);
-	suseconds_t tmp = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
-	return (tmp - start);
-}
-
-void pair_condition(t_info *dainfo)
-{
-	if (dainfo->pair == PAIR)
-		dainfo->pair = UNPAIR;
-	else
-		dainfo->pair = PAIR;
-    return ;
+	if (gettimeofday(&current_time, NULL) == -1)
+		output("gettimeofday failed\n", 2);
+	suseconds_t tmp = (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
+	tmp -= start;
+	return (tmp);
 }
 
 void *datask(void *arg)
@@ -45,13 +40,14 @@ void *datask(void *arg)
 	return NULL;
 }
 
-int prepare_philos(t_philo *philo, t_info* dainfo)
+int algo(t_philo *philo, t_info* dainfo)
 {
     int r;
 	int i;
 	t_philo *tmp;
 
     i = dainfo->pair;
+	started_timimg(dainfo);
     while (i < dainfo->number_of_philosophers)
     {
 		printf ("see it %d\n", philo[i].id);
@@ -80,10 +76,4 @@ int prepare_philos(t_philo *philo, t_info* dainfo)
 
 void algo(t_info *dainfo, t_philo *philo)
 {
-	started_timimg(dainfo);
-	while (1)
-	{
-        prepare_philos(philo, dainfo);
-    	pair_condition(dainfo);
-	}
 }
