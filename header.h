@@ -46,9 +46,9 @@ typedef struct s_info
     int time_to_sleep;
     int number_of_times_each_philosopher_must_eat;
     int nb_of_inputs;
-    int pair;
     suseconds_t starting_time;
     pthread_mutex_t *forks;
+    pthread_mutex_t write;
     // pthread_mutex_t lock;
     t_philo *philos;
     long long int tmp_nb[5];
@@ -72,7 +72,6 @@ int mystrlen(char *str);
 int long long myatoi(char *str);
 int algo(t_philo *philo, t_info* dainfo);
 void *datask(void *arg);
-void pair_condition(t_info *dainfo);
 void output(char *str, int fd);
 void started_timimg(t_info *dainfo);
 suseconds_t get_time(suseconds_t start);

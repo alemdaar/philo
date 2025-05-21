@@ -7,47 +7,57 @@ void output(char *str, int fd)
 
 void started_timimg(t_info *dainfo)
 {
-	struct timeval current_time;
-	if (gettimeofday(&current_time, NULL) == -1)
-		output("gettimeofday failed\n", 2);
-	dainfo->starting_time = (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
-	return ;
+    struct timeval current_time;
+    if (gettimeofday(&current_time, NULL) == -1)
+        output("gettimeofday failed\n", 2);
+    dainfo->starting_time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
 }
 
 suseconds_t get_time(suseconds_t start)
 {
-	struct timeval current_time;
-	if (gettimeofday(&current_time, NULL) == -1)
-		output("gettimeofday failed\n", 2);
-	suseconds_t tmp = (current_time.tv_sec * 1000 + current_time.tv_usec / 1000);
-	tmp -= start;
-	return (tmp);
+    struct timeval current_time;
+    if (gettimeofday(&current_time, NULL) == -1)
+        output("gettimeofday failed\n", 2);
+    suseconds_t current_ms = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+    return (current_ms - start);
 }
 
-void *datask(void *arg)
-{
-	t_philo *philo = (t_philo *)arg;
-	t_info *dainfo = philo->dainfo;
-	printf ("%d %d entered\n", get_time(dainfo->starting_time), philo->id);
-	pthread_mutex_lock(&dainfo->forks[(philo->id) - 1]);
-	printf ("%d %d has taken a fork\n", get_time(dainfo->starting_time), philo->id);
-	printf ("%d %d is eating\n", get_time(dainfo->starting_time), philo->id);
-	int long long tmp = 0;
-	while (tmp < 5000000000) tmp++;
-	// printf ("philo in mutex is %d\n", philo->id);
-	printf ("%d %d finished\n", get_time(dainfo->starting_time), philo->id);
-	pthread_mutex_unlock(&dainfo->forks[(philo->id) - 1]);
-	return NULL;
+void *datask(void *arg) {
+    t_philo *philo = (t_philo *)arg;
+    t_info *dainfo = philo->dainfo;
+    int left_fork = philo->id - 1;
+    int right_fork = philo->id % dainfo->number_of_philosophers;
+
+    while (1) {
+        // Lock forks in order (prevent deadlock)
+        pthread_mutex_lock(&dainfo->forks[left_fork]);
+        pthread_mutex_lock(&dainfo->write);
+        printf("%d %d took left fork\n", get_time(dainfo->starting_time), philo->id);
+        pthread_mutex_unlock(&dainfo->write);
+
+        pthread_mutex_lock(&dainfo->forks[right_fork]);
+        pthread_mutex_lock(&dainfo->write);
+        printf("%d %d took right fork\n", get_time(dainfo->starting_time), philo->id);
+        printf("%d %d is eating\n", get_time(dainfo->starting_time), philo->id);
+        pthread_mutex_unlock(&dainfo->write);
+
+        usleep(dainfo->time_to_eat * 1000); // Simulate eating
+
+        pthread_mutex_unlock(&dainfo->forks[left_fork]);
+        pthread_mutex_unlock(&dainfo->forks[right_fork]);
+
+        // Optional: Add thinking/sleeping logic
+    }
+    return NULL;
 }
 
 int algo(t_philo *philo, t_info* dainfo)
 {
     int r;
 	int i;
-	t_philo *tmp;
 
-    i = dainfo->pair;
 	started_timimg(dainfo);
+	i = 0;
     while (i < dainfo->number_of_philosophers)
     {
 		printf ("see it %d\n", philo[i].id);
@@ -57,10 +67,10 @@ int algo(t_philo *philo, t_info* dainfo)
 			// free_all();
 			why_exit("Error creating thread\n", 1);
 		}
-        i += 2;
+        i ++;
     }
 	r = pthread_create(&philo[i].thread, NULL, datask, &philo[i]);
-    i = dainfo->pair;
+    i = 0;
 	while (i < dainfo->number_of_philosophers)
     {
 		r = pthread_join(philo[i].thread, NULL);
@@ -69,11 +79,8 @@ int algo(t_philo *philo, t_info* dainfo)
 			// free_all();
 			why_exit("Error: waiting thread", 1);
 		}
-        i += 2;
+        i ++;
     }
+	exit(0);
 	return SUCCESSFUL;
-}
-
-void algo(t_info *dainfo, t_philo *philo)
-{
 }

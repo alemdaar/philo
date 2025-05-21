@@ -23,6 +23,9 @@ void set_mutex(t_info *dainfo)
 {
 	int i = 0;
 	int r;
+	r = pthread_mutex_init(&dainfo->write, NULL);
+	if (r NOT SUCCESSFUL)
+		why_exit("Failed to initialize mutex.\n", 1);
 	while (i++ < dainfo->number_of_philosophers)
 	{
 		r = pthread_mutex_init(&dainfo->forks[i], NULL);
@@ -40,8 +43,6 @@ int set_info(t_info *dainfo, t_philo **philo)
 
 	if (dainfo->nb_of_inputs == 5)
 		dainfo->number_of_times_each_philosopher_must_eat = dainfo->tmp_nb[4];
-
-	dainfo->pair = 0;
 
 	dainfo->forks = malloc (sizeof(pthread_mutex_t) * dainfo->number_of_philosophers);
 	if (!dainfo->forks)
@@ -91,10 +92,14 @@ void set_philos(t_info *dainfo, t_philo **philo)
 	{
 		// tmp_philo = &dainfo->philos[i];
 		philo[0][i].id = i + 1;
-		philo[0][i].fork[RIGHT] = -1;
-		philo[0][i].fork[LEFT] = -1;
+		if (philo[0][i].id == 1)
+			philo[0][i].fork[RIGHT] = dainfo->number_of_philosophers - 1;
+		else
+			philo[0][i].fork[RIGHT] = philo[0][i].id - 2;
+		philo[0][i].fork[LEFT] = philo[0][i].id - 1;
 		philo[0][i].dainfo = dainfo;
-        printf ("id %d is %d ----- 2\n", i, philo[0][i].id);
+		printf ("left %d right %d\n", i, philo[0][i].fork[1], philo[0][i].fork[0]);
+        // printf ("id %d is %d ----- 2\n", i, philo[0][i].id);
 		i++;
 	}
 }
