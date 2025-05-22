@@ -55,6 +55,10 @@ int set_info(t_info *dainfo, t_philo **philo)
 		return (why_exit("memory allocation failed\n", 1), FAILED);
 	}
 
+	dainfo->death = 0;
+
+	dainfo->died_id = -1;
+
 	dainfo->philos = philo[0];
 	return 0;
 }
@@ -93,13 +97,12 @@ void set_philos(t_info *dainfo, t_philo **philo)
 		// tmp_philo = &dainfo->philos[i];
 		philo[0][i].id = i + 1;
 		if (philo[0][i].id == 1)
-			philo[0][i].fork[RIGHT] = dainfo->number_of_philosophers - 1;
+			philo[0][i].fork[0] = dainfo->number_of_philosophers - 1;
 		else
-			philo[0][i].fork[RIGHT] = philo[0][i].id - 2;
-		philo[0][i].fork[LEFT] = philo[0][i].id - 1;
+			philo[0][i].fork[0] = philo[0][i].id - 2;
+		philo[0][i].fork[1] = philo[0][i].id - 1;
 		philo[0][i].dainfo = dainfo;
-		printf ("left %d right %d\n", i, philo[0][i].fork[1], philo[0][i].fork[0]);
-        // printf ("id %d is %d ----- 2\n", i, philo[0][i].id);
+		printf ("left %d right %d\n", philo[0][i].fork[1], philo[0][i].fork[0]);
 		i++;
 	}
 }

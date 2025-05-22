@@ -1,63 +1,38 @@
-#include <stdio.h>
 #include <unistd.h>
-#include <sys/time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
 
-void	my_putnbr(suseconds_t n)
+void *task(void *arg)
 {
-	int tmp;
-	if (n < 0)
-	{
-		if (n == -2147483648)
-		{
-			write (1, "-2147483648", 11);
-			return ;
-		}
-		write(1, "-", 1);
-		n = -n;
-	}
-	if (n / 10)
-	{
-		my_putnbr(n / 10);
-		my_putnbr(n % 10);
-	}
-	else
-	{
-		tmp = 48 + n;
-		write(1, &tmp, 1);
-	}
+    int *data = (int *) arg;
+    while (1)
+    {
+        if (*data != 1337)
+        {
+            printf ("no\n");
+            return NULL;
+        }
+        else
+            printf ("yes\n");
+    }
+    return NULL;
 }
 
-int main()
+int main ()
 {
-    my_putnbr(123);
-    printf ("\n");
-
-    my_putnbr(-123);
-    printf ("\n");
-
-    my_putnbr(0);
-    printf ("\n");
-
-    my_putnbr(-0);
-    printf ("\n");
-
-    my_putnbr(+0);
-    printf ("\n");
-
-    my_putnbr(+123);
-    printf ("\n");
-
-    my_putnbr(5);
-    printf ("\n");
-
-    my_putnbr(-3);
-    printf ("\n");
-
-    my_putnbr(-9875);
-    printf ("\n");
-
-    my_putnbr(+9875);
-    printf ("\n");
-
+    int data = 1337;
+    pthread_t thread;
+    int r = pthread_create(&thread, NULL, task, &data);
+    if (r != 0)
+    {
+        printf ("thread failed !\n");
+        return 1;
+    }
+    int tmp = 0;
+    while (tmp < 100000000)
+        tmp ++;
+    data = -6;
+    while (1);
     return 0;
 }

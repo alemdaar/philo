@@ -22,29 +22,46 @@ suseconds_t get_time(suseconds_t start)
     return (current_ms - start);
 }
 
+void *guarding(void *arg)
+{
+    t_info *dainfo = (t_info *) arg;
+    while (1)
+    {
+        if (dainfo->death IS DEAD)
+        {
+            pthread_mutex_lock(&dainfo->write);
+            printf ("%d %d died\n", get_time(dainfo->starting_time), dainfo->);
+            pthread_mutex_unlock(&dainfo->write);
+            return ;
+        }
+    }
+    
+}
+
 void *datask(void *arg) {
     t_philo *philo = (t_philo *)arg;
     t_info *dainfo = philo->dainfo;
-    int left_fork = philo->id - 1;
-    int right_fork = philo->id % dainfo->number_of_philosophers;
-
+    printf ("inside : %d ------------\n", philo->id);
     while (1) {
         // Lock forks in order (prevent deadlock)
-        pthread_mutex_lock(&dainfo->forks[left_fork]);
+        if ()
+        usleep(200); // Simulate eating
+        pthread_mutex_lock(&dainfo->forks[philo->fork[RIGHT]]);
+    
         pthread_mutex_lock(&dainfo->write);
         printf("%d %d took left fork\n", get_time(dainfo->starting_time), philo->id);
         pthread_mutex_unlock(&dainfo->write);
 
-        pthread_mutex_lock(&dainfo->forks[right_fork]);
+        pthread_mutex_lock(&dainfo->forks[philo->fork[LEFT]]);
+    
         pthread_mutex_lock(&dainfo->write);
         printf("%d %d took right fork\n", get_time(dainfo->starting_time), philo->id);
         printf("%d %d is eating\n", get_time(dainfo->starting_time), philo->id);
         pthread_mutex_unlock(&dainfo->write);
 
-        usleep(dainfo->time_to_eat * 1000); // Simulate eating
 
-        pthread_mutex_unlock(&dainfo->forks[left_fork]);
-        pthread_mutex_unlock(&dainfo->forks[right_fork]);
+        pthread_mutex_unlock(&dainfo->forks[philo->fork[LEFT]]);
+        pthread_mutex_unlock(&dainfo->forks[philo->fork[RIGHT]]);
 
         // Optional: Add thinking/sleeping logic
     }
@@ -56,11 +73,13 @@ int algo(t_philo *philo, t_info* dainfo)
     int r;
 	int i;
 
-	started_timimg(dainfo);
 	i = 0;
+	r = pthread_create(&philo[i].thread, NULL, guarding, &philo[i]);
+    i = 0;
+	started_timimg(dainfo);
     while (i < dainfo->number_of_philosophers)
     {
-		printf ("see it %d\n", philo[i].id);
+		printf ("see it ++++++++++ %d\n", philo[i].id);
 		r = pthread_create(&philo[i].thread, NULL, datask, &philo[i]);
 		if (r NOT SUCCESSFUL)
 		{
@@ -69,8 +88,6 @@ int algo(t_philo *philo, t_info* dainfo)
 		}
         i ++;
     }
-	r = pthread_create(&philo[i].thread, NULL, datask, &philo[i]);
-    i = 0;
 	while (i < dainfo->number_of_philosophers)
     {
 		r = pthread_join(philo[i].thread, NULL);

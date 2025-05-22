@@ -31,7 +31,7 @@ int main (int ac, char **av)
     //     i++;
     // }
     printf ("checked main\n");
-    // algo(philo, &dainfo);
+    algo(philo, &dainfo);
     // pthread_mutex_destroy(&dainfo.lock);
     // clean(); pthread_mutex_destroy(&mutex);
 }

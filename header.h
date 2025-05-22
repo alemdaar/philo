@@ -24,7 +24,7 @@
 #define NOT !=
 #define IS ==
 #define OR ||
-#define DEAD
+#define DEAD 1
 
 // struct
 typedef struct s_info t_info;
@@ -46,6 +46,8 @@ typedef struct s_info
     int time_to_sleep;
     int number_of_times_each_philosopher_must_eat;
     int nb_of_inputs;
+    int death;
+    int died_id;
     suseconds_t starting_time;
     pthread_mutex_t *forks;
     pthread_mutex_t write;
