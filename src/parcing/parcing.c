@@ -26,11 +26,12 @@ void set_mutex(t_info *dainfo)
 	r = pthread_mutex_init(&dainfo->write, NULL);
 	if (r NOT SUCCESSFUL)
 		why_exit("Failed to initialize mutex.\n", 1);
-	while (i++ < dainfo->number_of_philosophers)
+	while (i < dainfo->number_of_philosophers)
 	{
 		r = pthread_mutex_init(&dainfo->forks[i], NULL);
 		if (r NOT SUCCESSFUL)
     	    why_exit("Failed to initialize mutex.\n", 1);
+		i++;
 	}
 }
 
@@ -109,7 +110,7 @@ void set_philos(t_info *dainfo, t_philo **philo)
 
 void	init(int ac, char **av, t_info *dainfo, t_philo **philo)
 {
-	set_mutex(dainfo);
 	set_info(dainfo, philo);
+	set_mutex(dainfo);
 	set_philos(dainfo, philo);
 }
