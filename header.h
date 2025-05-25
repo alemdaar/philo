@@ -48,7 +48,7 @@ typedef struct s_info
     int nb_of_inputs;
     int death;
     int died_id;
-    suseconds_t starting_time;
+    long long starting_time;
     pthread_mutex_t *forks;
     pthread_mutex_t write;
     // pthread_mutex_t lock;
@@ -75,7 +75,7 @@ int long long myatoi(char *str);
 int algo(t_philo *philo, t_info* dainfo);
 void *datask(void *arg);
 void output(char *str, int fd);
-void started_timimg(t_info *dainfo);
-suseconds_t get_time(suseconds_t start);
+long long started_timimg(t_info *dainfo);
+long long get_time(t_info *dainfo);
 
 #endif
