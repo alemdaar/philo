@@ -76,6 +76,8 @@ void    parcing(int ac, char **av, t_info *dainfo)
 		if (r == 0)
 		    why_exit("the input is not a number\n", FAILED);
 		dainfo->tmp_nb[i - 1] = myatoi(av[i]);
+		if (dainfo->tmp_nb[i - 1] < 0)
+		    why_exit("the input contains a negative number\n", FAILED);
 		// printf ("nb :     %lld\n", nb[i - 1]);
 		if (i != 5 && dainfo->tmp_nb[i - 1] == 0)
 		    why_exit("one of the inputs is 0\n", FAILED);

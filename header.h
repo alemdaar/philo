@@ -9,6 +9,17 @@
 #include <sys/time.h>
 
 // macros
+
+#define FORK "has taken a fork"
+#define EAT "is eating"
+#define THINK "is thinking"
+#define SLEEP "is sleeping"
+#define DYING "died"
+
+# define RED "\033[31m"
+# define CYAN "\033[36m"
+# define RESET "\033[0m"
+
 #define TAKEN 1
 #define SINGLE 0
 #define TRUE 1
@@ -51,6 +62,7 @@ typedef struct s_info
     long long starting_time;
     pthread_mutex_t *forks;
     pthread_mutex_t write;
+    pthread_mutex_t death_mtx;
     // pthread_mutex_t lock;
     t_philo *philos;
     long long int tmp_nb[5];
@@ -75,6 +87,7 @@ int long long myatoi(char *str);
 int algo(t_philo *philo, t_info* dainfo);
 void *datask(void *arg);
 void output(char *str, int fd);
+void	status(t_philo *philo, char *action);
 long long started_timimg(t_info *dainfo);
 long long get_time(t_info *dainfo);
 
