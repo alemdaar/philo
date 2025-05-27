@@ -7,14 +7,14 @@ void output(char *str, int fd)
 
 void	status(t_philo *philo, char *action)
 {
-	pthread_mutex_lock(&philo->dainfo->death);
+	pthread_mutex_lock(&philo->dainfo->death_mtx);
 	if (!philo->dainfo->death)
 	{
 		pthread_mutex_lock(&philo->dainfo->write);
         printf(CYAN "%lld %d %s\n" RESET, get_time(philo->dainfo), philo->id, action);
 		pthread_mutex_unlock(&philo->dainfo->write);
 	}
-	pthread_mutex_unlock(&philo->dainfo->death);
+	pthread_mutex_unlock(&philo->dainfo->death_mtx);
 }
 
 long long started_timimg(t_info *dainfo)
@@ -33,119 +33,96 @@ long long get_time(t_info *dainfo)
     return (started_timimg(dainfo) - dainfo->starting_time);
 }
 
-void *guarding(void *arg)
+int holding(t_philo *philo, int duration)
 {
-    t_info *dainfo = (t_info *) arg;
-    while (1)
-    {
-        if (dainfo->death IS DEAD)
-        {
-            pthread_mutex_lock(&dainfo->write);
-            printf ("%d %d died\n", get_time(dainfo), dainfo->);
-            pthread_mutex_unlock(&dainfo->write);
-            return ;
-        }
-    }
+    int r;
+    long long now;
+
+    now = get_time(philo->dainfo);
+    while ((now - get_time(philo->dainfo)) < philo->dainfo->time_to_eat)
+	{
+		pthread_mutex_lock(&philo->dainfo->death_mtx);
+		r = philo->dainfo->death;
+		pthread_mutex_unlock(&philo->dainfo->death_mtx);
+		if (r IS DEAD)
+			break ;
+		usleep(500);
+	}
+    return SUCCESSFUL;
+}
+
+// void *guarding(void *arg)
+// {
+//     t_info *dainfo = (t_info *) arg;
+//     while (1)
+//     {
+//         if (dainfo->death IS DEAD)
+//         {
+//             pthread_mutex_lock(&dainfo->write);
+//             printf ("%d %d died\n", get_time(dainfo), dainfo->);
+//             pthread_mutex_unlock(&dainfo->write);
+//             return ;
+//         }
+//     }
     
+// }
+
+static int thinking(t_philo *philo)
+{
+    status(philo, THINK);
+    return SUCCESSFUL;
 }
 
-void thinking(t_philo *philo, t_info *dainfo)
+static int sleeping(t_philo *philo)
 {
-    status(philo, THINK)
+    status(philo, SLEEP);
+    holding(philo, philo->dainfo->time_to_sleep);
+    return SUCCESSFUL;
 }
-
-void eating(t_info *philo, int duration)
+static int eating(t_philo *philo)
 {
-
+    status(philo, EAT);
+    holding(philo, philo->dainfo->time_to_eat);
+    return SUCCESSFUL;
 }
 
 void *datask(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
+    if (philo->dainfo->trouble IS ERROR)
+        return NULL;
     if (philo->id % 2 == 0) // 2 4
     {
-        holding();
-        thinking(philo, philo->dainfo);
+        thinking(philo);
+        holding(philo, philo->dainfo->time_to_eat / 2);
         while (1)
         {
             pthread_mutex_lock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d took right fork -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
-
+            status(philo, FORK);
             pthread_mutex_lock(&philo->dainfo->forks[philo->fork[LEFT]]);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d took left fork -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d is eating\n", get_time(philo->dainfo), philo->id);
-            pthread_mutex_unlock(&philo->dainfo->write);
-
-            eating(philo, dainfo);
-            usleep(philo->dainfo->time_to_eat);
-
+            status(philo, FORK);
+            eating(philo);
             pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d leaves left fork -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
             pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d leaves right fork -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d slept\n", get_time(philo->dainfo), philo->id);
-            pthread_mutex_unlock(&philo->dainfo->write);
-
-            usleep(philo->dainfo->time_to_sleep);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d thinking\n", get_time(philo->dainfo), philo->id);
-            pthread_mutex_unlock(&philo->dainfo->write);
+            status(philo, "test");
+            sleeping(philo);
+            thinking(philo);
         }
     }
     else 
     {
-        while (1) 
+        while (1)
         {
-            pthread_mutex_lock(&philo->dainfo->forks[philo->fork[LEFT]]);
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d took left fork else -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
             pthread_mutex_lock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d took right fork else -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d is eating else \n", get_time(philo->dainfo), philo->id);
-            pthread_mutex_unlock(&philo->dainfo->write);
-            // die 500 eat 600
-
-            usleep(philo->dainfo->time_to_eat);
-
-            pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d leaves right fork else -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
-
+            status(philo, FORK);
+            pthread_mutex_lock(&philo->dainfo->forks[philo->fork[LEFT]]);
+            status(philo, FORK);
+            eating(philo);
             pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d leaves left fork else -> %d\n", get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
-            pthread_mutex_unlock(&philo->dainfo->write);
-
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d slept\n", get_time(philo->dainfo), philo->id);
-            pthread_mutex_unlock(&philo->dainfo->write);
-            usleep(philo->dainfo->time_to_sleep);
-            pthread_mutex_lock(&philo->dainfo->write);
-            printf("%lld %d thinking\n", get_time(philo->dainfo), philo->id);
-            pthread_mutex_unlock(&philo->dainfo->write);
+            pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
+            status(philo, "test2");
+            sleeping(philo);
+            thinking(philo);
         }
     }
     return NULL;
@@ -162,12 +139,13 @@ int algo(t_philo *philo, t_info* dainfo)
 	dainfo->starting_time = started_timimg(dainfo);
     while (i < dainfo->number_of_philosophers)
     {
-		// printf ("\033[1;34msee it ++++++++++ %d \033[0m\n", philo[i].id);
 		r = pthread_create(&philo[i].thread, NULL, datask, &philo[i]);
 		if (r NOT SUCCESSFUL)
 		{
 			// free_all();
-			why_exit("Error creating thread\n", 1);
+			output("Error creating thread\n", 2);
+            dainfo->trouble = -1;
+            return ERROR;
 		}
         i++;
     }
@@ -178,11 +156,11 @@ int algo(t_philo *philo, t_info* dainfo)
 		if (r NOT SUCCESSFUL)
 		{
 			// free_all();
-			why_exit("Error: waiting thread", 1);
+			output("Error: waiting thread", 2);
+            dainfo->trouble = -1;
+            return ERROR;
 		}
-        i ++;
+        i++;
     }
-    printf ("END\n");
-	// exit(0);
 	return SUCCESSFUL;
 }

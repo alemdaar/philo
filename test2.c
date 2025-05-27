@@ -6,16 +6,8 @@
 void *task(void *arg)
 {
     int *data = (int *) arg;
-    while (1)
-    {
-        if (*data != 1337)
-        {
-            printf ("no\n");
-            return NULL;
-        }
-        else
-            printf ("yes\n");
-    }
+    
+    return arg;
     return NULL;
 }
 
@@ -23,6 +15,7 @@ int main ()
 {
     int data = 1337;
     pthread_t thread;
+    char *str = NULL;
     int r = pthread_create(&thread, NULL, task, &data);
     if (r != 0)
     {
@@ -32,7 +25,7 @@ int main ()
     int tmp = 0;
     while (tmp < 100000000)
         tmp ++;
-    data = -6;
+    printf ("address : %p", str);
     while (1);
     return 0;
 }

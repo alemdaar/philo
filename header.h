@@ -26,6 +26,7 @@
 #define FALSE 0
 #define SUCCESSFUL 0
 #define FAILED 1
+#define ERROR -1
 #define LEFT 1
 #define RIGHT 0
 #define PAIR 0
@@ -46,6 +47,7 @@ typedef struct s_philo
     pthread_t lock;
     int count_meals;
     int fork[2];
+    long long last_meal;
     t_info *dainfo;
 }   t_philo;
 
@@ -59,6 +61,7 @@ typedef struct s_info
     int nb_of_inputs;
     int death;
     int died_id;
+    int trouble;
     long long starting_time;
     pthread_mutex_t *forks;
     pthread_mutex_t write;

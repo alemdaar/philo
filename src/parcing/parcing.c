@@ -56,9 +56,13 @@ int set_info(t_info *dainfo, t_philo **philo)
 		return (why_exit("memory allocation failed\n", 1), FAILED);
 	}
 
+	philo[0]->count_meals = 0;
+
 	dainfo->death = 0;
 
 	dainfo->died_id = -1;
+
+	dainfo->trouble = 0;
 
 	dainfo->philos = philo[0];
 	return 0;
