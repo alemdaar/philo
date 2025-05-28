@@ -19,20 +19,21 @@ int is_number(char *str)
     return 1;
 }
 
-void set_mutex(t_info *dainfo)
+int set_mutex(t_info *dainfo)
 {
 	int i = 0;
 	int r;
 	r = pthread_mutex_init(&dainfo->write, NULL);
 	if (r NOT SUCCESSFUL)
-		why_exit("Failed to initialize mutex.\n", 1);
+		return (output("Failed to initialize mutex.\n", 2), FAILED);
 	while (i < dainfo->number_of_philosophers)
 	{
 		r = pthread_mutex_init(&dainfo->forks[i], NULL);
 		if (r NOT SUCCESSFUL)
-    	    why_exit("Failed to initialize mutex.\n", 1);
+			return (output("Failed to initialize mutex.\n", 2), FAILED);
 		i++;
 	}
+	return SUCCESSFUL;
 }
 
 int set_info(t_info *dainfo, t_philo **philo)
@@ -47,13 +48,13 @@ int set_info(t_info *dainfo, t_philo **philo)
 
 	dainfo->forks = malloc (sizeof(pthread_mutex_t) * dainfo->number_of_philosophers);
 	if (!dainfo->forks)
-		return (why_exit("memory allocation failed\n", 1), FAILED);
+		return (output("memory allocation failed\n", 2), FAILED);
 
 	philo[0] = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
 	if (!philo[0])
 	{
 		// free_all(dainfo->forks);
-		return (why_exit("memory allocation failed\n", 1), FAILED);
+		return (output("memory allocation failed\n", 2), FAILED);
 	}
 
 	philo[0]->count_meals = 0;
@@ -68,7 +69,7 @@ int set_info(t_info *dainfo, t_philo **philo)
 	return 0;
 }
 
-void    parcing(int ac, char **av, t_info *dainfo)
+int	parcing(int ac, char **av, t_info *dainfo)
 {
 	int i;
 	int r;
@@ -78,22 +79,22 @@ void    parcing(int ac, char **av, t_info *dainfo)
 		// printf ("input %d: %s\n", i, av[i]);
 		r = is_number(av[i]);
 		if (r == 0)
-		    why_exit("the input is not a number\n", FAILED);
+		    return (output("the input is not a number\n", 2), FAILED);
 		dainfo->tmp_nb[i - 1] = myatoi(av[i]);
 		if (dainfo->tmp_nb[i - 1] < 0)
-		    why_exit("the input contains a negative number\n", FAILED);
+		    return (output("the input contains a negative number\n", 2), FAILED);
 		// printf ("nb :     %lld\n", nb[i - 1]);
 		if (i != 5 && dainfo->tmp_nb[i - 1] == 0)
-		    why_exit("one of the inputs is 0\n", FAILED);
+		    return (output("one of the inputs is 0\n", 2), FAILED);
 		i++;
 	}
 	if (ac == 5)
 		dainfo->number_of_times_each_philosopher_must_eat = -1;
 	dainfo->nb_of_inputs = ac - 1;
-	return;
+	return SUCCESSFUL;
 }
 
-void set_philos(t_info *dainfo, t_philo **philo)
+int set_philos(t_info *dainfo, t_philo **philo)
 {
 	int	i;
 
@@ -109,14 +110,24 @@ void set_philos(t_info *dainfo, t_philo **philo)
 			philo[0][i].fork[0] = philo[0][i].id - 2;
 		philo[0][i].fork[1] = philo[0][i].id - 1;
 		philo[0][i].dainfo = dainfo;
-		printf ("left %d right %d\n", philo[0][i].fork[1], philo[0][i].fork[0]);
+		// printf ("left %d right %d\n", philo[0][i].fork[1], philo[0][i].fork[0]);
 		i++;
 	}
+	return SUCCESSFUL;
 }
 
-void	init(int ac, char **av, t_info *dainfo, t_philo **philo)
+int	init(int ac, char **av, t_info *dainfo, t_philo **philo)
 {
-	set_info(dainfo, philo);
-	set_mutex(dainfo);
-	set_philos(dainfo, philo);
+	int r;
+
+	r = set_info(dainfo, philo);
+	if (r IS FAILED)
+		return (FAILED);
+	r = set_mutex(dainfo);
+	if (r IS FAILED)
+		return (FAILED);
+	r = set_philos(dainfo, philo);
+	if (r IS FAILED)
+		return (FAILED);
+	return SUCCESSFUL;
 }

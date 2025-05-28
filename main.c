@@ -6,16 +6,22 @@ int main (int ac, char **av)
     // // [number_of_times_each_philosopher_must_eat] (optional)
     t_info dainfo;
     t_philo *philo;
+    int r;
+
     if (ac != 5 && ac != 6) 
-        why_exit("number of args is not valid\n", 0);
-    parcing(ac, av, &dainfo);
-    init(ac, av, &dainfo, &philo);
+        return(output("number of args is not valid\n", 2), 1);
+    r = parcing(ac, av, &dainfo);
+    if (r IS FAILED)
+        return (1);
+    r = init(ac, av, &dainfo, &philo);
+    if (r IS FAILED)
+        return (1);
     // printf ("philos : %d\n", dainfo.number_of_philosophers);
     // printf ("die : %d\n", dainfo.time_to_die);
     // printf ("eat : %d\n", dainfo.time_to_eat);
     // printf ("sleep : %d\n", dainfo.time_to_sleep);
     // printf ("meals : %d\n", dainfo.number_of_times_each_philosopher_must_eat);
-    int i = 0;
+    // int i = 0;
     // t_philo *tmp;
     // while (i < dainfo.number_of_philosophers)
     // {
@@ -24,13 +30,13 @@ int main (int ac, char **av)
     //     printf ("id %d is %d\n", i, tmp->id);
     //     i++;
     // }
-    i = 0;
+    // i = 0;
     // while (i < dainfo.number_of_philosophers)
     // {
     //     printf ("left %d right %d\n", i, philo[i].fork[LEFT], philo[i].fork[RIGHT]);
     //     i++;
     // }
-    printf ("checked main\n");
+    // printf ("checked main\n");
     algo(philo, &dainfo);
     // pthread_mutex_destroy(&dainfo.lock);
     // clean(); pthread_mutex_destroy(&mutex);

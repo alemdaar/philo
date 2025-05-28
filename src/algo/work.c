@@ -5,13 +5,14 @@ void output(char *str, int fd)
     write (fd, str, mystrlen(str));
 }
 
-void	status(t_philo *philo, char *action)
+void	status(t_philo *philo, char *action, char *color)
 {
 	pthread_mutex_lock(&philo->dainfo->death_mtx);
 	if (!philo->dainfo->death)
 	{
 		pthread_mutex_lock(&philo->dainfo->write);
-        printf(CYAN "%lld %d %s\n" RESET, get_time(philo->dainfo), philo->id, action);
+        printf("%s", color);
+        printf("%lld %d %s\n" RESET, get_time(philo->dainfo), philo->id, action);
 		pthread_mutex_unlock(&philo->dainfo->write);
 	}
 	pthread_mutex_unlock(&philo->dainfo->death_mtx);
@@ -39,8 +40,11 @@ int holding(t_philo *philo, int duration)
     long long now;
 
     now = get_time(philo->dainfo);
-    while ((now - get_time(philo->dainfo)) < philo->dainfo->time_to_eat)
+    // pthread_mutex_lock(&philo->dainfo->write);
+	// pthread_mutex_unlock(&philo->dainfo->write);
+    while ((get_time(philo->dainfo)) - now < philo->dainfo->time_to_eat)
 	{
+        // write (1, "-\n", 2);
 		pthread_mutex_lock(&philo->dainfo->death_mtx);
 		r = philo->dainfo->death;
 		pthread_mutex_unlock(&philo->dainfo->death_mtx);
@@ -69,19 +73,19 @@ int holding(t_philo *philo, int duration)
 
 static int thinking(t_philo *philo)
 {
-    status(philo, THINK);
+    status(philo, THINK, WHITE);
     return SUCCESSFUL;
 }
 
 static int sleeping(t_philo *philo)
 {
-    status(philo, SLEEP);
+    status(philo, SLEEP, MAGENTA);
     holding(philo, philo->dainfo->time_to_sleep);
     return SUCCESSFUL;
 }
 static int eating(t_philo *philo)
 {
-    status(philo, EAT);
+    status(philo, EAT, GREEN);
     holding(philo, philo->dainfo->time_to_eat);
     return SUCCESSFUL;
 }
@@ -98,31 +102,59 @@ void *datask(void *arg)
         while (1)
         {
             pthread_mutex_lock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-            status(philo, FORK);
+            // status(philo, FORK, CYAN);
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(CYAN "%lld %d has taken %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
             pthread_mutex_lock(&philo->dainfo->forks[philo->fork[LEFT]]);
-            status(philo, FORK);
+            // status(philo, FORK, CYAN);
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(CYAN "%lld %d has taken %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
             eating(philo);
             pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(RED "%lld %d leaves the %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
             pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-            status(philo, "test");
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(RED "%lld %d leaves the %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
             sleeping(philo);
             thinking(philo);
+            // return NULL;
         }
     }
     else 
     {
         while (1)
         {
-            pthread_mutex_lock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-            status(philo, FORK);
             pthread_mutex_lock(&philo->dainfo->forks[philo->fork[LEFT]]);
-            status(philo, FORK);
+            // status(philo, FORK, CYAN);
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(CYAN "%lld %d has taken %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
+            pthread_mutex_lock(&philo->dainfo->forks[philo->fork[RIGHT]]);
+            // status(philo, FORK, CYAN);
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(CYAN "%lld %d has taken %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
+            // pthread_mutex_lock(&philo->dainfo->write);
+            // write (1, "*\n", 2);
+            // // printf(RED "%lld %d %s\n" RESET, get_time(philo->dainfo), philo->id, "TEST2");
+		    // pthread_mutex_unlock(&philo->dainfo->write);
             eating(philo);
-            pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
             pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-            status(philo, "test2");
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(RED "%lld %d leaves the %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[RIGHT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
+            pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
+            pthread_mutex_lock(&philo->dainfo->write);
+            printf(RED "%lld %d leaves the %d fork\n" RESET, get_time(philo->dainfo), philo->id, philo->fork[LEFT]);
+		    pthread_mutex_unlock(&philo->dainfo->write);
             sleeping(philo);
             thinking(philo);
+            // return NULL;
         }
     }
     return NULL;
