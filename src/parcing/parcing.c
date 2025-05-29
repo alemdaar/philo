@@ -109,6 +109,9 @@ int set_philos(t_info *dainfo, t_philo **philo)
 		else
 			philo[0][i].fork[0] = philo[0][i].id - 2;
 		philo[0][i].fork[1] = philo[0][i].id - 1;
+		philo[0][i].fork[1] = philo[0][i].id - 1;
+		philo[0][i].last_meal = -1;
+		philo[0][i].health = 0;
 		philo[0][i].dainfo = dainfo;
 		// printf ("left %d right %d\n", philo[0][i].fork[1], philo[0][i].fork[0]);
 		i++;

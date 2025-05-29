@@ -79,10 +79,10 @@ typedef struct s_philo
 {
     int id;
     pthread_t thread;
-    pthread_t lock;
     int count_meals;
     int fork[2];
     long long last_meal;
+    int health;
     t_info *dainfo;
 }   t_philo;
 
@@ -99,6 +99,7 @@ typedef struct s_info
     int trouble;
     long long starting_time;
     pthread_mutex_t *forks;
+    pthread_t gaurd;
     pthread_mutex_t write;
     pthread_mutex_t death_mtx;
     // pthread_mutex_t lock;
@@ -122,11 +123,15 @@ int    set_mutex(t_info *dainfo);
 // tools
 int mystrlen(char *str);
 int long long myatoi(char *str);
+int holding(t_philo *philo, int duration);
 int algo(t_philo *philo, t_info* dainfo);
 void *datask(void *arg);
 void output(char *str, int fd);
 void	status(t_philo *philo, char *action, char *color);
-long long started_timimg(t_info *dainfo);
+long long started_timimg(void);
 long long get_time(t_info *dainfo);
+int thinking(t_philo *philo);
+int sleeping(t_philo *philo);
+int eating(t_philo *philo);
 
 #endif

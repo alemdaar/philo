@@ -2,82 +2,35 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include "header.h"
 
-void *task(void *arg)
+
+long long started_timimg()
 {
-    printf ("123456789\n");
-    pthread_mutex_t *mutex = (pthread_mutex_t *) arg;
-    pthread_mutex_lock(mutex);
-    printf ("hello\n");
-    int tmp = 0;
-    while (tmp < 1)
-        tmp ++;
-    printf ("man\n");
-    pthread_mutex_unlock(mutex);
-    return NULL;
+    struct timeval current_time;
+    if (gettimeofday(&current_time, NULL) == -1)
+    {
+        printf("gettimeofday failed\n");
+        return 1;
+    }
+    return ((current_time.tv_sec * 1000) + (current_time.tv_usec / 1000));
+}
+
+long long get_time(t_info *dainfo)
+{
+    struct timeval current_time;
+    if (gettimeofday(&current_time, NULL) == -1)
+        output("gettimeofday failed\n", 2);
+    return (started_timimg() - dainfo->starting_time);
 }
 
 int main ()
 {
-    pthread_t thread, thread2, thread3, thread4, thread5, thread6, thread7, thread8, thread9;
-    pthread_mutex_t mutex;
-    int r = pthread_mutex_init(&mutex, NULL);
-	if (r != 0)
-		return(printf("Failed to initialize mutex.\n"), 1);
-    r = pthread_create(&thread, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread2, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread3, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread4, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread5, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread6, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread7, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread8, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    r = pthread_create(&thread9, NULL, task, &mutex);
-    if (r != 0)
-    {
-        printf ("thread 2 failed !\n");
-        return 1;
-    }
-    while (1);
-    return 0;
+    t_info dainfo;
+    long long now;
+
+    dainfo.starting_time = started_timimg();
+    now = 23;
+    now = get_time(&dainfo);
+    printf ("timme is : %lld\n", now);
 }
