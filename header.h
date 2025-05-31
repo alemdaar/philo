@@ -97,11 +97,14 @@ typedef struct s_info
     int death;
     int died_id;
     int trouble;
+    int meals_reached;
     long long starting_time;
     pthread_mutex_t *forks;
     pthread_t gaurd;
     pthread_mutex_t write;
     pthread_mutex_t death_mtx;
+    pthread_mutex_t meals_mutex;
+    pthread_mutex_t health_mtx;
     // pthread_mutex_t lock;
     t_philo *philos;
     long long int tmp_nb[5];
@@ -133,5 +136,7 @@ long long get_time(t_info *dainfo);
 int thinking(t_philo *philo);
 int sleeping(t_philo *philo);
 int eating(t_philo *philo);
+int one_philo(t_philo *philo, t_info *dainfo);
+void *onephilo_task(void *arg);
 
 #endif

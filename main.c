@@ -37,7 +37,10 @@ int main (int ac, char **av)
     //     i++;
     // }
     // printf ("checked main\n");
-    algo(philo, &dainfo);
+    if (dainfo.number_of_philosophers == 1)
+        one_philo(philo, &dainfo);
+    else
+        algo(philo, &dainfo);
     // pthread_mutex_destroy(&dainfo.lock);
     // clean(); pthread_mutex_destroy(&mutex);
 }

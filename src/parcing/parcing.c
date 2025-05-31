@@ -26,6 +26,15 @@ int set_mutex(t_info *dainfo)
 	r = pthread_mutex_init(&dainfo->write, NULL);
 	if (r NOT SUCCESSFUL)
 		return (output("Failed to initialize mutex.\n", 2), FAILED);
+	r = pthread_mutex_init(&dainfo->death_mtx, NULL);
+	if (r NOT SUCCESSFUL)
+		return (output("Failed to initialize mutex.\n", 2), FAILED);
+	r = pthread_mutex_init(&dainfo->meals_mutex, NULL);
+	if (r NOT SUCCESSFUL)
+		return (output("Failed to initialize mutex.\n", 2), FAILED);
+	r = pthread_mutex_init(&dainfo->health_mtx, NULL);
+	if (r NOT SUCCESSFUL)
+		return (output("Failed to initialize mutex.\n", 2), FAILED);
 	while (i < dainfo->number_of_philosophers)
 	{
 		r = pthread_mutex_init(&dainfo->forks[i], NULL);
@@ -64,6 +73,8 @@ int set_info(t_info *dainfo, t_philo **philo)
 	dainfo->died_id = -1;
 
 	dainfo->trouble = 0;
+
+	dainfo->meals_reached = 0;
 
 	dainfo->philos = philo[0];
 	return 0;
