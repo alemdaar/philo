@@ -74,7 +74,7 @@ void *guarding(void *arg)
                 }
             }
             pthread_mutex_unlock(&dainfo->meals_mutex);
-            if (dainfo->philos[i].health >= dainfo->time_to_die)
+            if (dainfo->philos[i].health > dainfo->time_to_die)
             {
                 pthread_mutex_lock(&dainfo->death_mtx);
 
@@ -96,7 +96,6 @@ void *guarding(void *arg)
         }
     }
     return NULL;
-    
 }
 
 int thinking(t_philo *philo)
@@ -158,8 +157,6 @@ void *datask(void *arg)
 
     if (philo->dainfo->trouble IS ERROR)
         return NULL;
-
-    philo->health = 0;
     philo->last_meal = get_time(philo->dainfo);
 
     if (philo->id % 2 == 0) // 2 4
