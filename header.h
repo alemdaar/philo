@@ -114,7 +114,6 @@ typedef struct s_info
 
 // prototypes
 // errors
-void why_exit(char *str, int status);
 // parcing
 int is_number(char *str);
 int set_info(t_info *dainfo, t_philo **philo);

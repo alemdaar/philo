@@ -5,7 +5,7 @@ int is_number(char *str)
     int i;
     i = 0;
 	if (!str[0])
-		why_exit("one of the args is empty\n", FAILED);
+		exit(0);
     if (str[i] IS '+' || str[i] IS '-')
         i++;
     if (!str[i])
