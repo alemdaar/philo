@@ -5,14 +5,11 @@ void output(char *str, int fd)
     write (fd, str, mystrlen(str));
 }
 
-void	status(t_philo *philo, char *action, char *color)
+void	status(t_philo *philo, char *action)
 {
 	pthread_mutex_lock(&philo->dainfo->death_mtx);
 	if (!philo->dainfo->death)
-	{
-        printf("%s", color);
-        printf("%lld %d %s\n" RESET, get_time(philo->dainfo), philo->id, action);
-	}
+        printf("%lld %d %s\n", get_time(philo->dainfo), philo->id, action);
 	pthread_mutex_unlock(&philo->dainfo->death_mtx);
 }
 
@@ -65,15 +62,20 @@ void *guarding(void *arg)
         i = 0;
         while (i < dainfo->number_of_philosophers)
         {
+            pthread_mutex_lock(&dainfo->meals_mutex);
             if (dainfo->philos[i].count_meals == dainfo->philos[i].dainfo->number_of_times_each_philosopher_must_eat)
             {
                 dainfo->meals_reached += 1;
                 if (dainfo->meals_reached == dainfo->philos[i].dainfo->number_of_philosophers)
                 {
+                    pthread_mutex_unlock(&dainfo->meals_mutex);
                     return NULL;
                 }
+                pthread_mutex_unlock(&dainfo->meals_mutex);
             }
-            // printf (RED "%lld %d last update : %d\n" RESET, get_time(dainfo), i + 1, dainfo->philos[i].health);
+            pthread_mutex_unlock(&dainfo->meals_mutex);
+
+            pthread_mutex_lock(&dainfo->health_mtx);
             if (dainfo->philos[i].health >= dainfo->time_to_die)
             {
                 pthread_mutex_lock(&dainfo->death_mtx);
@@ -83,10 +85,12 @@ void *guarding(void *arg)
                 printf (RED "%lld %d died\n" RESET, get_time(dainfo), i + 1);
 
                 pthread_mutex_unlock(&dainfo->death_mtx);
+                pthread_mutex_unlock(&dainfo->health_mtx);
 
                 return NULL;
             }
         	dainfo->philos[i].health = (get_time(dainfo) - dainfo->philos[i].last_meal);
+            pthread_mutex_unlock(&dainfo->health_mtx);
             i++;
         }
     }
@@ -95,7 +99,7 @@ void *guarding(void *arg)
 
 int thinking(t_philo *philo)
 {
-    status(philo, THINK, WHITE);
+    status(philo, THINK);
     return SUCCESSFUL;
 }
 
@@ -103,7 +107,7 @@ int sleeping(t_philo *philo)
 {
     int r;
 
-    status(philo, SLEEP, MAGENTA);
+    status(philo, SLEEP);
     r = holding(philo, philo->dainfo->time_to_sleep);
     if (r IS FAILED)
         return FAILED;
@@ -115,27 +119,27 @@ int eating(t_philo *philo)
     int r;
 
     pthread_mutex_lock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-    status(philo, FORK, CYAN);
+    status(philo, FORK);
 
     pthread_mutex_lock(&philo->dainfo->forks[philo->fork[LEFT]]);
-    status(philo, FORK, CYAN);
+    status(philo, FORK);
 	
+    pthread_mutex_lock(&philo->dainfo->health_mtx);
     philo->health = 0;
+    pthread_mutex_unlock(&philo->dainfo->health_mtx);
     philo->last_meal = get_time(philo->dainfo);
 
-    status(philo, EAT, GREEN);
+    status(philo, EAT);
     r = holding(philo, philo->dainfo->time_to_eat);
     if (r IS FAILED)
     {
         pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-
-        
         pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
-
-
         return FAILED;
     }
+    pthread_mutex_lock(&philo->dainfo->meals_mutex);
     philo->count_meals += 1;
+    pthread_mutex_unlock(&philo->dainfo->meals_mutex);
 
     pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
     pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
@@ -147,6 +151,7 @@ void *datask(void *arg)
 {
     t_philo *philo = (t_philo *)arg;
     int r;
+    int i;
 
     if (philo->dainfo->trouble IS ERROR)
         return NULL;
@@ -158,29 +163,41 @@ void *datask(void *arg)
         if (r IS FAILED)
             return NULL;
     }
-    while (1)
+    if (philo->dainfo->nb_of_inputs == 4)
     {
-        r = eating(philo);
-        if (r IS FAILED)
+        while (1)
         {
-            pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
-            pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-            return NULL;
+        	r = eating(philo);
+        	if (r IS FAILED)
+        	{
+        	    pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
+        	    pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
+        	    return NULL;
+        	}
+        	r = sleeping(philo);
+        	if (r IS FAILED)
+        	    return NULL;
+        	thinking(philo);
         }
-
-        if (philo->count_meals == philo->dainfo->number_of_times_each_philosopher_must_eat)
-        {
-            return NULL;
-        }
-
-        r = sleeping(philo);
-        if (r IS FAILED)
-        {
-            return NULL;
-        }
-
-        thinking(philo);
     }
+	else
+	{
+		i = 0;
+        while (i < philo->dainfo->number_of_times_each_philosopher_must_eat)
+        {
+        	r = eating(philo);
+        	if (r IS FAILED)
+        	{
+        	    pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
+        	    pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
+        	    return NULL;
+        	}
+        	r = sleeping(philo);
+        	if (r IS FAILED)
+        	    return NULL;
+        	thinking(philo);
+			i++;
+	}
     return NULL;
 }
 

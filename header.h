@@ -129,7 +129,7 @@ int holding(t_philo *philo, int duration);
 int algo(t_philo *philo, t_info* dainfo);
 void *datask(void *arg);
 void output(char *str, int fd);
-void	status(t_philo *philo, char *action, char *color);
+void	status(t_philo *philo, char *action);
 long long started_timimg(void);
 long long get_time(t_info *dainfo);
 int thinking(t_philo *philo);
