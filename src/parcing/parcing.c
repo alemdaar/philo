@@ -25,21 +25,35 @@ int set_mutex(t_info *dainfo)
 	int r;
 	r = pthread_mutex_init(&dainfo->write, NULL);
 	if (r NOT SUCCESSFUL)
+	{
+		free_all(dainfo);
 		return (output("Failed to initialize mutex.\n", 2), FAILED);
+	}
 	r = pthread_mutex_init(&dainfo->death_mtx, NULL);
 	if (r NOT SUCCESSFUL)
+	{
+		free_all(dainfo);
 		return (output("Failed to initialize mutex.\n", 2), FAILED);
-	r = pthread_mutex_init(&dainfo->meals_mutex, NULL);
-	if (r NOT SUCCESSFUL)
-		return (output("Failed to initialize mutex.\n", 2), FAILED);
-	r = pthread_mutex_init(&dainfo->health_mtx, NULL);
-	if (r NOT SUCCESSFUL)
-		return (output("Failed to initialize mutex.\n", 2), FAILED);
+	}
+	while (i < dainfo->number_of_philosophers)
+	{
+		r = pthread_mutex_init(&dainfo->philos[i].health_mtx, NULL);
+		if (r NOT SUCCESSFUL)
+		{
+			free_all(dainfo);
+			return (output("Failed to initialize mutex.\n", 2), FAILED);
+		}
+		i++;
+	}
+	i = 0;
 	while (i < dainfo->number_of_philosophers)
 	{
 		r = pthread_mutex_init(&dainfo->forks[i], NULL);
 		if (r NOT SUCCESSFUL)
+		{
+			free_all(dainfo);
 			return (output("Failed to initialize mutex.\n", 2), FAILED);
+		}
 		i++;
 	}
 	return SUCCESSFUL;
@@ -62,7 +76,7 @@ int set_info(t_info *dainfo, t_philo **philo)
 	philo[0] = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
 	if (!philo[0])
 	{
-		// free_all(dainfo->forks);
+		free_all(dainfo->forks);
 		return (output("memory allocation failed\n", 2), FAILED);
 	}
 
@@ -73,8 +87,6 @@ int set_info(t_info *dainfo, t_philo **philo)
 	dainfo->died_id = -1;
 
 	dainfo->trouble = 0;
-
-	dainfo->meals_reached = 0;
 
 	dainfo->philos = philo[0];
 	return 0;

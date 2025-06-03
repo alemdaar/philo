@@ -16,44 +16,6 @@
 #define SLEEP "is sleeping"
 #define DYING "died"
 
-// # define RED "\033[31m"
-// # define CYAN "\033[36m"
-// # define RESET "\033[0m"
-// =========
-// Color definitions
-# define RESET       "\033[0m"
-
-# define BLACK       "\033[30m"
-# define RED         "\033[31m"
-# define GREEN       "\033[32m"
-# define YELLOW      "\033[33m"
-# define BLUE        "\033[34m"
-# define MAGENTA     "\033[35m"
-# define CYAN        "\033[36m"
-# define WHITE       "\033[37m"
-
-// Bright versions
-# define BRIGHT_BLACK   "\033[90m"
-# define BRIGHT_RED     "\033[91m"
-# define BRIGHT_GREEN   "\033[92m"
-# define BRIGHT_YELLOW  "\033[93m"
-# define BRIGHT_BLUE    "\033[94m"
-# define BRIGHT_MAGENTA "\033[95m"
-# define BRIGHT_CYAN    "\033[96m"
-# define BRIGHT_WHITE   "\033[97m"
-
-// Bold versions
-# define BOLD       "\033[1m"
-# define DIM        "\033[2m"
-# define UNDERLINE  "\033[4m"
-# define REVERSED   "\033[7m"
-
-// Reset styles
-# define RESET_BOLD      "\033[21m"
-# define RESET_DIM       "\033[22m"
-# define RESET_UNDERLINE "\033[24m"
-# define RESET_REVERSED  "\033[27m"
-
 // =========
 #define TAKEN 1
 #define SINGLE 0
@@ -83,6 +45,7 @@ typedef struct s_philo
     int fork[2];
     long long last_meal;
     int health;
+    pthread_mutex_t health_mtx;
     t_info *dainfo;
 }   t_philo;
 
@@ -97,15 +60,11 @@ typedef struct s_info
     int death;
     int died_id;
     int trouble;
-    int meals_reached;
     long long starting_time;
     pthread_mutex_t *forks;
     pthread_t gaurd;
     pthread_mutex_t write;
     pthread_mutex_t death_mtx;
-    pthread_mutex_t meals_mutex;
-    pthread_mutex_t health_mtx;
-    // pthread_mutex_t lock;
     t_philo *philos;
     long long int tmp_nb[5];
 } t_info;
@@ -129,11 +88,11 @@ int holding(t_philo *philo, int duration);
 int algo(t_philo *philo, t_info* dainfo);
 void *datask(void *arg);
 void output(char *str, int fd);
-void	status(t_philo *philo, char *action);
+void	status(t_philo *philo, char *action, long long date);
 long long started_timimg(void);
 long long get_time(t_info *dainfo);
-int thinking(t_philo *philo);
-int sleeping(t_philo *philo);
+int thinking(t_philo *philo, long long date);
+int sleeping(t_philo *philo, long long date);
 int eating(t_philo *philo);
 int one_philo(t_philo *philo, t_info *dainfo);
 void *onephilo_task(void *arg);
