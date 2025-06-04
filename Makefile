@@ -5,7 +5,7 @@ CC = cc
 SRC = main.c src/parcing/*.c src/tools/*.c src/algo/*.c
 
 all:
-	${CC} -g -pthread ${SRC} -o ${NAME}
+	${CC} -Wall -Wextra -Werror -g -pthread ${SRC} -o ${NAME}
 
 # clean:
 #	rm -f ${NAME}

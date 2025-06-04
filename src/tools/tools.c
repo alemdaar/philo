@@ -26,3 +26,16 @@ int long long myatoi(char *str)
     nb *= sign;
     return (nb);
 }
+
+void	output(char *str, int fd)
+{
+	write(fd, str, mystrlen(str));
+}
+
+void	status(t_philo *philo, char *action, long long date)
+{
+	pthread_mutex_lock(&philo->dainfo->death_mtx);
+	if (!philo->dainfo->death)
+		printf("%lld %d %s\n", date, philo->id, action);
+	pthread_mutex_unlock(&philo->dainfo->death_mtx);
+}

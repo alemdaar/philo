@@ -16,20 +16,15 @@
 #define SLEEP "is sleeping"
 #define DYING "died"
 
+#define ERR_CTH "Error: creating thread\n"
+#define ERR_JTH "Error: joining thread\n"
+
 // =========
-#define TAKEN 1
-#define SINGLE 0
-#define TRUE 1
-#define FALSE 0
 #define SUCCESSFUL 0
 #define FAILED 1
 #define ERROR -1
 #define LEFT 1
 #define RIGHT 0
-#define PAIR 0
-#define UNPAIR 1
-#define STDOUT 1
-#define STDERR 2
 #define NOT !=
 #define IS ==
 #define OR ||
@@ -58,12 +53,10 @@ typedef struct s_info
     int number_of_times_each_philosopher_must_eat;
     int nb_of_inputs;
     int death;
-    int died_id;
     int trouble;
     long long starting_time;
     pthread_mutex_t *forks;
     pthread_t gaurd;
-    pthread_mutex_t write;
     pthread_mutex_t death_mtx;
     t_philo *philos;
     long long int tmp_nb[5];
@@ -96,5 +89,7 @@ int sleeping(t_philo *philo, long long date);
 int eating(t_philo *philo);
 int one_philo(t_philo *philo, t_info *dainfo);
 void *onephilo_task(void *arg);
+void free_all(t_info *dainfo);
+void clean(t_info *dainfo);
 
 #endif
