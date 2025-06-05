@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 21:56:47 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/04 22:40:20 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/05 22:26:15 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,22 +16,25 @@ void	*guarding(void *arg)
 {
 	t_info	*dainfo;
 	int		must_eat;
+	int		r;
 
 	dainfo = (t_info *) arg;
 	must_eat = dainfo->number_of_times_each_philosopher_must_eat;
 	while (1)
-		guarding2(dainfo);
+	{
+		r = guarding2(dainfo, must_eat);
+		if (r == FAILED)
+			return (NULL);
+	}
 	return (NULL);
 }
 
 void	*datask(void *arg)
 {
 	t_philo		*philo;
-	int			r;
-	int			i;
 
 	philo = (t_philo *)arg;
-	if (philo->dainfo->trouble IS ERROR)
+	if (philo->dainfo->trouble == ERROR)
 		return (NULL);
 	philo->last_meal = get_time(philo->dainfo);
 	if (philo->id % 2 == 0)
@@ -65,13 +68,13 @@ int	one_philo(t_philo *philo, t_info *dainfo)
 
 	i = 0;
 	r = pthread_create(&philo->thread, NULL, onephilo_task, philo);
-	if (r NOT SUCCESSFUL)
+	if (r != SUCCESSFUL)
 	{
 		output("Error creating thread\n", 2);
 		return (dainfo->trouble = -1, ERROR);
 	}
 	r = pthread_join(philo->thread, NULL);
-	if (r NOT SUCCESSFUL)
+	if (r != SUCCESSFUL)
 		return (output("Error: waiting thread", 2), ERROR);
 	return (SUCCESSFUL);
 }
@@ -83,23 +86,22 @@ int	algo(t_philo *philo, t_info *dainfo)
 
 	i = 0;
 	r = pthread_create(&dainfo->gaurd, NULL, guarding, dainfo);
-	if (r NOT SUCCESSFUL)
+	if (r != SUCCESSFUL)
 		return (output(ERR_CTH, 2), dainfo->trouble = -1, ERROR);
 	dainfo->starting_time = started_timimg();
 	while (i < dainfo->number_of_philosophers)
 	{
-		r = pthread_create(&philo[i++].thread, NULL, datask, &philo[i]);
-		if (r NOT SUCCESSFUL)
-			return (output(ERR_CTH, 2), dainfo->trouble = -1, ERROR);
+		pthread_create(&philo[i].thread, NULL, datask, &philo[i]);
+		i++;
 	}
 	r = pthread_join(dainfo->gaurd, NULL);
-	if (r NOT SUCCESSFUL)
+	if (r != SUCCESSFUL)
 		return (output(ERR_JTH, 2), ERROR);
 	i = 0;
 	while (i < dainfo->number_of_philosophers)
 	{
 		r = pthread_join(philo[i++].thread, NULL);
-		if (r NOT SUCCESSFUL)
+		if (r != SUCCESSFUL)
 			return (output("Error: waiting thread", 2), ERROR);
 	}
 	return (SUCCESSFUL);

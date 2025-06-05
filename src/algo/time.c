@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:44 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/04 22:36:45 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/05 22:23:44 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	holding(t_philo *philo, int duration)
 	while ((get_time(philo->dainfo) - now) < duration)
 	{
 		pthread_mutex_lock(&philo->dainfo->death_mtx);
-		if (philo->dainfo->death IS DEAD)
+		if (philo->dainfo->death == DEAD)
 			return (pthread_mutex_unlock(&philo->dainfo->death_mtx), FAILED);
 		pthread_mutex_unlock(&philo->dainfo->death_mtx);
 		usleep(500);

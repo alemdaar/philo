@@ -1,47 +1,37 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/05 22:28:20 by oelhasso          #+#    #+#             */
+/*   Updated: 2025/06/05 22:29:23 by oelhasso         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "header.h"
 
-void free_all(t_info *dainfo)
+int	main(int ac, char **av)
 {
-	free(dainfo->forks);
-	free(dainfo->philos);
-	return ;
-}
+	t_info	dainfo;
+	t_philo	*philo;
+	int		r;
 
-void clean(t_info *dainfo)
-{
-	int	i;
-	i = 0;
-    while (i < dainfo->number_of_philosophers)
-    {
-		pthread_mutex_destroy(&dainfo->philos[i].health_mtx);
-		pthread_mutex_destroy(&dainfo->forks[i]);
-		i++;
-    }
-	pthread_mutex_destroy(&dainfo->death_mtx);
-    free_all(dainfo);
-	return ;
-}
-
-int main (int ac, char **av)
-{
-    t_info	dainfo;
-    t_philo	*philo;
-    int		r;
-
-    if(ac NOT 5 && ac NOT 6) 
-        return(output("number of args is not valid\n", 2), 1);
-    r = parcing(ac, av, &dainfo);
-    if (r IS FAILED)
-        return (1);
-    r = init(ac, av, &dainfo, &philo);
-    if (r IS FAILED)
-        return (1);
-    if (dainfo.number_of_philosophers == 1)
-        r = one_philo(philo, &dainfo);
-    else
-        r = algo(philo, &dainfo);
-    if (r IS ERROR)
-        return (1);
-    clean(&dainfo);
-	return 0;
+	if (ac != 5 && ac != 6) 
+		return (output("number of args is != valid\n", 2), 1);
+	r = parcing(ac, av, &dainfo);
+	if (r == FAILED)
+		return (1);
+	r = init(&dainfo, &philo);
+	if (r == FAILED)
+		return (1);
+	if (dainfo.number_of_philosophers == 1)
+		r = one_philo(philo, &dainfo);
+	else
+		r = algo(philo, &dainfo);
+	if (r == ERROR)
+		return (1);
+	clean(&dainfo);
+	return (0);
 }

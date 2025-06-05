@@ -1,30 +1,48 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tools.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/05 17:23:00 by oelhasso          #+#    #+#             */
+/*   Updated: 2025/06/05 17:28:09 by oelhasso         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../header.h"
 
-int mystrlen(char *str)
+int	mystrlen(char *str)
 {
-    if (!str)
-        return 0;
-    int i = 0;
-    while (str[i])
-        i++;
-    return i;
+	int	i;
+
+	if (!str)
+		return (0);
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
 }
 
-int long long myatoi(char *str)
+long long	myatoi(char *str)
 {
-    int i = 0;
-    int sign = 1;
-    int long long nb = 0;
-    if (str[i] == '+' || str[i] == '-')
-    {
-        if (str[i] == '-')
-            sign *= -1;
-        i++;
-    }
-    while (str[i])
-        nb = (nb * 10) + (str[i++] - 48);
-    nb *= sign;
-    return (nb);
+	int			i;
+	int			sign;
+	long long	nb;
+
+	i = 0;
+	sign = 1;
+	nb = 0;
+	if (str[i] == '+' || str[i] == '-')
+	{
+		if (str[i] == '-')
+			sign *= -1;
+		i++;
+	}
+	while (str[i])
+		nb = (nb * 10) + (str[i++] - 48);
+	nb *= sign;
+	return (nb);
 }
 
 void	output(char *str, int fd)

@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/04 22:36:32 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/05 22:30:30 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@ int	thinking(t_philo *philo, long long date)
 
 int	sleeping(t_philo *philo, long long date)
 {
-	int	r;
-
 	status(philo, SLEEP, date);
 	holding(philo, philo->dainfo->time_to_sleep);
 	return (SUCCESSFUL);
@@ -41,7 +39,7 @@ int	eating(t_philo *philo)
 	philo->last_meal = get_time(philo->dainfo);
 	status(philo, EAT, get_time(philo->dainfo));
 	r = holding(philo, philo->dainfo->time_to_eat);
-	if (r IS FAILED)
+	if (r == FAILED)
 	{
 		pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
 		pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
@@ -60,7 +58,7 @@ int	endless(t_philo *philo)
 	while (1)
 	{
 		r = eating(philo);
-		if (r IS FAILED)
+		if (r == FAILED)
 			return (FAILED);
 		sleeping(philo, get_time(philo->dainfo));
 		thinking(philo, get_time(philo->dainfo));
@@ -77,10 +75,11 @@ int	limited(t_philo *philo)
 	while (i < philo->dainfo->number_of_times_each_philosopher_must_eat)
 	{
 		r = eating(philo);
-		if (r IS FAILED)
+		if (r == FAILED)
 			return (FAILED);
 		sleeping(philo, get_time(philo->dainfo));
 		thinking(philo, get_time(philo->dainfo));
 		i++;
 	}
+	return (SUCCESSFUL);
 }
