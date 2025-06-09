@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:12:16 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 13:56:30 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 22:35:07 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ int	guarding2(t_info *dainfo, int must_eat)
 			dainfo->death = 1;
 			printf ("%lld %d died\n", get_time(dainfo), i + 1);
 			pthread_mutex_unlock(&dainfo->death_mtx);
-			pthread_mutex_unlock(&dainfo->philos[i].health_mtx);
-			return (FAILED);
+			return (pthread_mutex_unlock(&dainfo->philos[i].health_mtx), 1);
 		}
 		pthread_mutex_unlock(&dainfo->philos[i++].health_mtx);
 	}

@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:14:21 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 12:17:27 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 20:18:45 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	clean(t_info *dainfo)
 		i++;
 	}
 	pthread_mutex_destroy(&dainfo->death_mtx);
+	pthread_mutex_destroy(&dainfo->count_mtx);
 	free_all(dainfo);
 	return ;
 }

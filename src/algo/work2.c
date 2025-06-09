@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 13:57:41 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 22:02:39 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,7 @@ int	eating(t_philo *philo)
 	philo->count_meals += 1;
 	pthread_mutex_unlock(&philo->dainfo->count_mtx);
 	pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
-	pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-	return (SUCCESSFUL);
+	return (pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[0]]), 0);
 }
 
 int	endless(t_philo *philo)
