@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:28:20 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/05 22:29:23 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 12:17:15 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,21 @@ int	main(int ac, char **av)
 
 	if (ac != 5 && ac != 6) 
 		return (output("number of args is != valid\n", 2), 1);
+
 	r = parcing(ac, av, &dainfo);
 	if (r == FAILED)
 		return (1);
+
 	r = init(&dainfo, &philo);
 	if (r == FAILED)
 		return (1);
+
 	if (dainfo.number_of_philosophers == 1)
 		r = one_philo(philo, &dainfo);
 	else
 		r = algo(philo, &dainfo);
+	clean(&dainfo);
 	if (r == ERROR)
 		return (1);
-	clean(&dainfo);
 	return (0);
 }

@@ -2,7 +2,7 @@ CC = cc
 
 NAME = philo
 
-CFLAGS = -Wall -Wextra -Werror -g -pthread
+CFLAGS = -Wall -Wextra -Werror -g -pthread -fsanitize=thread
 
 SRC = main.c src/algo/time.c src/algo/work.c src/algo/work2.c src/algo/work3.c \
 	src/tools/tools.c src/parcing/parcing.c src/free/free.c src/init/init.c

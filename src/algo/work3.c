@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:12:16 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/05 18:57:34 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:56:30 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,16 @@ int	guarding2(t_info *dainfo, int must_eat)
 	int	health;
 
 	i = 0;
-	if (dainfo->philos[i].count_meals == must_eat)
+	pthread_mutex_lock(&dainfo->count_mtx);
+	if (dainfo->philos[0].count_meals == must_eat)
 		return (FAILED);
+	pthread_mutex_unlock(&dainfo->count_mtx);
 	while (i < dainfo->number_of_philosophers)
 	{
-		pthread_mutex_lock(&dainfo->philos[i].health_mtx);
+		pthread_mutex_lock(&dainfo->philos[i].meal_mtx);
 		health = (get_time(dainfo) - dainfo->philos[i].last_meal);
+		pthread_mutex_unlock(&dainfo->philos[i].meal_mtx);
+		pthread_mutex_lock(&dainfo->philos[i].health_mtx);
 		dainfo->philos[i].health = health;
 		if (dainfo->philos[i].health >= dainfo->time_to_die)
 		{

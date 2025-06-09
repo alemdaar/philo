@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:14:02 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/05 22:26:40 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:54:34 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_philo
 	long long		last_meal;
 	int				health;
 	pthread_mutex_t	health_mtx;
+	pthread_mutex_t	meal_mtx;
 	t_info			*dainfo;
 }	t_philo;
 
@@ -72,6 +73,7 @@ typedef struct s_info
 	pthread_mutex_t	*forks;
 	pthread_t		gaurd;
 	pthread_mutex_t	death_mtx;
+	pthread_mutex_t	count_mtx;
 	t_philo			*philos;
 	long long		tmp_nb[5];
 }	t_info;

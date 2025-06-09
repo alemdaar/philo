@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:14:21 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/05 17:51:24 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 12:17:27 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	clean(t_info *dainfo)
 	while (i < dainfo->number_of_philosophers)
 	{
 		pthread_mutex_destroy(&dainfo->philos[i].health_mtx);
+		pthread_mutex_destroy(&dainfo->philos[i].meal_mtx);
 		pthread_mutex_destroy(&dainfo->forks[i]);
 		i++;
 	}

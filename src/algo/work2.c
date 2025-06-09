@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/05 22:30:30 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:57:41 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ int	eating(t_philo *philo)
 	pthread_mutex_lock(&philo->health_mtx);
 	philo->health = 0;
 	pthread_mutex_unlock(&philo->health_mtx);
+	pthread_mutex_lock(&philo->meal_mtx);
 	philo->last_meal = get_time(philo->dainfo);
+	pthread_mutex_unlock(&philo->meal_mtx);
 	status(philo, EAT, get_time(philo->dainfo));
 	r = holding(philo, philo->dainfo->time_to_eat);
 	if (r == FAILED)
@@ -45,7 +47,9 @@ int	eating(t_philo *philo)
 		pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
 		return (FAILED);
 	}
+	pthread_mutex_lock(&philo->dainfo->count_mtx);
 	philo->count_meals += 1;
+	pthread_mutex_unlock(&philo->dainfo->count_mtx);
 	pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
 	pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
 	return (SUCCESSFUL);

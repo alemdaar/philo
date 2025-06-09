@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 21:56:47 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/05 22:26:15 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:39:33 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,9 @@ void	*datask(void *arg)
 	philo = (t_philo *)arg;
 	if (philo->dainfo->trouble == ERROR)
 		return (NULL);
+	pthread_mutex_lock(&philo->meal_mtx);
 	philo->last_meal = get_time(philo->dainfo);
+	pthread_mutex_unlock(&philo->meal_mtx);
 	if (philo->id % 2 == 0)
 	{
 		status(philo, THINK, get_time(philo->dainfo));
@@ -85,10 +87,10 @@ int	algo(t_philo *philo, t_info *dainfo)
 	int	i;
 
 	i = 0;
+	dainfo->starting_time = started_timimg();
 	r = pthread_create(&dainfo->gaurd, NULL, guarding, dainfo);
 	if (r != SUCCESSFUL)
 		return (output(ERR_CTH, 2), dainfo->trouble = -1, ERROR);
-	dainfo->starting_time = started_timimg();
 	while (i < dainfo->number_of_philosophers)
 	{
 		pthread_create(&philo[i].thread, NULL, datask, &philo[i]);
