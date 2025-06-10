@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 21:56:47 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 22:35:03 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/10 16:40:21 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,12 @@
 void	*guarding(void *arg)
 {
 	t_info	*dainfo;
-	int		must_eat;
 	int		r;
 
 	dainfo = (t_info *) arg;
-	must_eat = dainfo->number_of_times_each_philosopher_must_eat;
 	while (1)
 	{
-		r = guarding2(dainfo, must_eat);
+		r = guarding2(dainfo);
 		if (r == FAILED)
 			return (NULL);
 	}
@@ -91,20 +89,14 @@ int	algo(t_philo *philo, t_info *dainfo)
 	r = pthread_create(&dainfo->gaurd, NULL, guarding, dainfo);
 	if (r != SUCCESSFUL)
 		return (output(ERR_CTH, 2), dainfo->trouble = -1, ERROR);
+	pthread_mutex_lock(&dainfo->philos[0].meal_mtx);
+	dainfo->starting_time = started_timimg();
+	pthread_mutex_unlock(&dainfo->philos[0].meal_mtx);
 	while (i < dainfo->number_of_philosophers)
 	{
 		pthread_create(&philo[i].thread, NULL, datask, &philo[i]);
 		i++;
 	}
-	r = pthread_join(dainfo->gaurd, NULL);
-	if (r != SUCCESSFUL)
-		return (output(ERR_JTH, 2), ERROR);
-	i = 0;
-	while (i < dainfo->number_of_philosophers)
-	{
-		r = pthread_join(philo[i++].thread, NULL);
-		if (r != SUCCESSFUL)
-			return (output("Error: waiting thread", 2), ERROR);
-	}
-	return (SUCCESSFUL);
+	r = algo2(philo, dainfo);
+	return (r);
 }

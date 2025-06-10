@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:14:02 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 13:54:34 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/10 16:40:49 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ typedef struct s_philo
 {
 	int				id;
 	pthread_t		thread;
-	int				count_meals;
 	int				fork[2];
 	long long		last_meal;
 	int				health;
@@ -69,6 +68,7 @@ typedef struct s_info
 	int				nb_of_inputs;
 	int				death;
 	int				trouble;
+	int				count_meal;
 	long long		starting_time;
 	pthread_mutex_t	*forks;
 	pthread_t		gaurd;
@@ -101,8 +101,9 @@ int			one_philo(t_philo *philo, t_info *dainfo);
 void		*onephilo_task(void *arg);
 void		free_all(t_info *dainfo);
 void		clean(t_info *dainfo);
-int			guarding2(t_info *dainfo, int must_eat);
+int			guarding2(t_info *dainfo);
 int			limited(t_philo *philo);
 int			endless(t_philo *philo);
+int			algo2(t_philo *philo, t_info *dainfo);
 
 #endif

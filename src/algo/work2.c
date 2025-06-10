@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 22:02:39 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:26:14 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,6 @@ int	eating(t_philo *philo)
 		pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
 		return (FAILED);
 	}
-	pthread_mutex_lock(&philo->dainfo->count_mtx);
-	philo->count_meals += 1;
-	pthread_mutex_unlock(&philo->dainfo->count_mtx);
 	pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
 	return (pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[0]]), 0);
 }
@@ -84,5 +81,12 @@ int	limited(t_philo *philo)
 		thinking(philo, get_time(philo->dainfo));
 		i++;
 	}
+	pthread_mutex_lock(&philo->dainfo->count_mtx);
+	if (philo->dainfo->count_meal == 0)
+	{
+		philo->dainfo->count_meal = 1;
+		return (SUCCESSFUL);
+	}
+	pthread_mutex_unlock(&philo->dainfo->count_mtx);
 	return (SUCCESSFUL);
 }

@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 17:12:35 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 20:28:47 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:28:02 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	set_info(t_info *dainfo, t_philo **philo)
 	philo[0] = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
 	if (!philo[0])
 		return (free(dainfo->forks), output(ERR_MAF, 2), FAILED);
-	philo[0]->count_meals = 0;
+	dainfo->count_meal = 0;
 	dainfo->death = 0;
 	dainfo->trouble = 0;
 	dainfo->philos = philo[0];
