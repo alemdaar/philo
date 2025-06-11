@@ -12,7 +12,7 @@
 
 #include "../../header.h"
 
-int	is_number(char *str)
+static int	is_number(char *str)
 {
 	int	i;
 

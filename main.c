@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:28:20 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/09 20:17:41 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/11 12:33:27 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	main(int ac, char **av)
 	t_philo	*philo;
 	int		r;
 
-	if (ac != 5 && ac != 6) 
+	if (ac != 5 && ac != 6)
 		return (output("number of args is != valid\n", 2), 1);
 	r = parcing(ac, av, &dainfo);
 	if (r == FAILED)

@@ -78,10 +78,6 @@ typedef struct s_info
 	long long		tmp_nb[5];
 }	t_info;
 
-int			is_number(char *str);
-int			set_info(t_info *dainfo, t_philo **philo);
-void		check_input(int ac, char **av, t_info *dainfo);
-int			set_philos(t_info *dainfo, t_philo **philo);
 int			parcing(int ac, char **av, t_info *dainfo);
 int			init(t_info *dainfo, t_philo **philo);
 int			set_mutex(t_info *dainfo);
@@ -89,7 +85,6 @@ int			mystrlen(char *str);
 long long	myatoi(char *str);
 int			holding(t_philo *philo, int duration);
 int			algo(t_philo *philo, t_info *dainfo);
-void		*datask(void *arg);
 void		output(char *str, int fd);
 void		status(t_philo *philo, char *action, long long date);
 long long	started_timimg(void);
@@ -98,7 +93,6 @@ int			thinking(t_philo *philo, long long date);
 int			sleeping(t_philo *philo, long long date);
 int			eating(t_philo *philo);
 int			one_philo(t_philo *philo, t_info *dainfo);
-void		*onephilo_task(void *arg);
 void		free_all(t_info *dainfo);
 void		clean(t_info *dainfo);
 int			guarding2(t_info *dainfo);

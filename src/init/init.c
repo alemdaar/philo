@@ -12,7 +12,7 @@
 
 #include "../../header.h"
 
-int	set_philos(t_info *dainfo, t_philo **philo)
+static int	set_philos(t_info *dainfo, t_philo **philo)
 {
 	int	i;
 
@@ -34,7 +34,7 @@ int	set_philos(t_info *dainfo, t_philo **philo)
 	return (SUCCESSFUL);
 }
 
-int	set_info(t_info *dainfo, t_philo **philo)
+static int	set_info(t_info *dainfo, t_philo **philo)
 {
 	int	var;
 	int	count;
