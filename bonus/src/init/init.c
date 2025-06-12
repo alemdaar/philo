@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 17:12:35 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/11 16:18:37 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/12 16:39:10 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static int	set_philos(t_info *dainfo, t_philo **philo)
 		else
 			philo[0][i].fork[0] = philo[0][i].id - 2;
 		philo[0][i].fork[1] = philo[0][i].id - 1;
-		philo[0][i].fork[1] = philo[0][i].id - 1;
 		philo[0][i].last_meal = -1;
 		philo[0][i].health = 0;
 		philo[0][i].dainfo = dainfo;
@@ -37,7 +36,6 @@ static int	set_philos(t_info *dainfo, t_philo **philo)
 static int	set_info(t_info *dainfo, t_philo **philo)
 {
 	int	var;
-	int	count;
 
 	dainfo->number_of_philosophers = dainfo->tmp_nb[0];
 	dainfo->time_to_die = dainfo->tmp_nb[1];
@@ -46,10 +44,6 @@ static int	set_info(t_info *dainfo, t_philo **philo)
 	var = dainfo->tmp_nb[4];
 	if (dainfo->nb_of_inputs == 5)
 		dainfo->number_of_times_each_philosopher_must_eat = var;
-	count = dainfo->number_of_philosophers;
-	dainfo->forks = malloc (sizeof(pthread_mutex_t) * count);
-	if (!dainfo->forks)
-		return (output(ERR_MAF, 2), FAILED);
 	philo[0] = malloc (sizeof(t_philo) * dainfo->number_of_philosophers);
 	if (!philo[0])
 		return (free(dainfo->forks), output(ERR_MAF, 2), FAILED);

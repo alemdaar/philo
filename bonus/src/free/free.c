@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 20:57:33 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/11 21:36:09 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:14:39 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,6 @@ void	free_all(t_info *dainfo)
 
 void    clean(t_info *dainfo)
 {
-    clean_smp(&dainfo);
+    clean_smp(dainfo);
     free_all(dainfo);
 }

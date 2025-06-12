@@ -6,11 +6,11 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/12 22:01:10 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/12 22:52:20 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../header.h"
+#include "../../header_bonus.h"
 
 int	thinking(t_philo *philo, long long date)
 {
@@ -29,26 +29,30 @@ int	eating(t_philo *philo)
 {
 	int	r;
 
-	pthread_mutex_lock(&philo->dainfo->forks[philo->fork[RIGHT]]);
+	// printf ("philo %d wants right fork\n", philo->id);
+	sem_wait(philo->dainfo->forks);
 	status(philo, FORK, get_time(philo->dainfo));
-	pthread_mutex_lock(&philo->dainfo->forks[philo->fork[LEFT]]);
+	// printf ("philo %d wants left fork\n", philo->id);
+	sem_wait(philo->dainfo->forks);
 	status(philo, FORK, get_time(philo->dainfo));
-	pthread_mutex_lock(&philo->health_mtx);
+	sem_wait(philo->health_smp);
+	// printf ("philo %d health 0\n", philo->id);
 	philo->health = 0;
-	pthread_mutex_unlock(&philo->health_mtx);
-	pthread_mutex_lock(&philo->meal_mtx);
+	sem_post(philo->health_smp);
+	sem_wait(philo->meal_smp);
+	// printf ("philo %d last meal\n", philo->id);
 	philo->last_meal = get_time(philo->dainfo);
-	pthread_mutex_unlock(&philo->meal_mtx);
+	sem_post(philo->meal_smp);
 	status(philo, EAT, get_time(philo->dainfo));
 	r = holding(philo, philo->dainfo->time_to_eat);
 	if (r == FAILED)
 	{
-		pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[RIGHT]]);
-		pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
+		sem_post(philo->dainfo->forks);
+		sem_post(philo->dainfo->forks);
 		return (FAILED);
 	}
-	pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[LEFT]]);
-	return (pthread_mutex_unlock(&philo->dainfo->forks[philo->fork[0]]), 0);
+	sem_post(philo->dainfo->forks);
+	return (sem_post(philo->dainfo->forks), 0);
 }
 
 int	endless(t_philo *philo)
@@ -57,6 +61,7 @@ int	endless(t_philo *philo)
 
 	while (1)
 	{
+		printf ("philo : %d\n", philo->id);
 		r = eating(philo);
 		if (r == FAILED)
 			return (FAILED);
@@ -72,10 +77,8 @@ int	limited(t_philo *philo)
 	int	r;
 
 	i = 0;
-	status(philo, "dkhal", get_time(philo->dainfo));
 	while (i < philo->dainfo->number_of_times_each_philosopher_must_eat)
 	{
-		status(philo, "seeeeee", get_time(philo->dainfo));
 		r = eating(philo);
 		if (r == FAILED)
 			return (FAILED);
@@ -83,16 +86,16 @@ int	limited(t_philo *philo)
 		thinking(philo, get_time(philo->dainfo));
 		i++;
 	}
-	pthread_mutex_lock(&philo->dainfo->count_mtx);
+	sem_wait(philo->dainfo->count_smp);
 	status(philo, "wsal hna", get_time(philo->dainfo));
 	if (philo->dainfo->count_meal == 0)
 	{
 		philo->dainfo->count_meal = 1;
-		pthread_mutex_unlock(&philo->dainfo->count_mtx);
+		sem_post(philo->dainfo->count_smp);
 		status(philo, "HERE 1", get_time(philo->dainfo));
 		return (SUCCESSFUL);
 	}
-	pthread_mutex_unlock(&philo->dainfo->count_mtx);
+	sem_post(philo->dainfo->count_smp);
 	status(philo, "HERE 2", get_time(philo->dainfo));
 	return (SUCCESSFUL);
 }

@@ -6,13 +6,31 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 15:53:51 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/11 22:31:58 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/12 22:41:12 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../header_bonus.h"
 
-static int semaphores3(t_info *dainfo)
+static int	smp_name(char *health_str, int i, int len)
+{
+	char	snb[4];
+	char	*snbp;
+	int		j;
+
+	snbp = snb;
+	snbp = ft_itoa(i);
+	j = 0;
+	while (j < mystrlen(snbp))
+	{
+		health_str[len++] = snbp[j++];
+		j++;
+	}
+	health_str[len] = 0;
+	return (SUCCESSFUL);
+}
+
+static int semaphores4(t_info *dainfo)
 {
 	int	i;
 	int	j;
@@ -39,11 +57,14 @@ static int semaphores3(t_info *dainfo)
 	int	i;
 	int	j;
 	int	r;
+	char meal_str[13] = "/meal_smp";
 
 	i = 0;
 	while (i < dainfo->number_of_philosophers)
 	{
-		dainfo->philos[i].meal_smp = sem_open("/meal_smp", O_CREAT, 0644, 1);
+		smp_name(meal_str, i, mystrlen("/meal_smp"));
+		printf ("name : %s\n", meal_str);
+		dainfo->philos[i].meal_smp = sem_open(meal_str, O_CREAT, 0644, 1);
 		if (dainfo->philos[i].meal_smp == SEM_FAILED)
 		{
 			j = 0;
@@ -67,11 +88,14 @@ static int	semaphores2(t_info *dainfo)
 	int	i;
 	int	j;
 	int	r;
+	char health_str[15] = "/health_smp";
 	
 	i = 0;
 	while (i < dainfo->number_of_philosophers)
 	{
-		dainfo->philos[i].health_smp = sem_open("/health_smp", O_CREAT, 0644, 1);
+		smp_name(health_str, i, mystrlen("/health_smp"));
+		printf ("name : %s\n", health_str);
+		dainfo->philos[i].health_smp = sem_open(health_str, O_CREAT, 0644, 1);
 		if (dainfo->philos[i].health_smp == SEM_FAILED)
 		{
 			j = 0;

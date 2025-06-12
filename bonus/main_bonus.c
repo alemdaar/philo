@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 13:09:09 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/11 15:15:12 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/12 17:11:40 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	main(int ac, char **av)
 	if (dainfo.number_of_philosophers == 1)
 		r = one_philo(philo, &dainfo);
 	else
-		r = algo(philo, &dainfo);
+		r = algo(&dainfo);
 	clean(&dainfo);
 	if (r == ERROR)
 		return (1);

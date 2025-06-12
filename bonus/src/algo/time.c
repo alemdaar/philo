@@ -6,11 +6,11 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:44 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/12 18:03:36 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/12 20:21:00 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../header.h"
+#include "../../header_bonus.h"
 
 long long	started_timimg(void)
 {
@@ -35,10 +35,10 @@ int	holding(t_philo *philo, int duration)
 	now = get_time(philo->dainfo);
 	while ((get_time(philo->dainfo) - now) < duration)
 	{
-		pthread_mutex_lock(&philo->dainfo->death_mtx);
+		sem_wait(philo->dainfo->death_smp);
 		if (philo->dainfo->death == DEAD)
-			return (pthread_mutex_unlock(&philo->dainfo->death_mtx), FAILED);
-		pthread_mutex_unlock(&philo->dainfo->death_mtx);
+			return (sem_post(philo->dainfo->death_smp), FAILED);
+		sem_post(philo->dainfo->death_smp);
 		usleep(500);
 	}
 	return (SUCCESSFUL);
