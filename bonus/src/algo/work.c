@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:12:45 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/12 22:07:27 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/13 13:46:02 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,10 +107,6 @@ int algo(t_info *dainfo)
 	int	i;
 
 	i = 0;
-	dainfo->starting_time = started_timimg();
-	r = pthread_create(&dainfo->guard, NULL, guarding, dainfo);
-	if (r != SUCCESSFUL)
-		return (output(ERR_CTH, 2), dainfo->trouble = -1, ERROR);
 	sem_wait(dainfo->philos[0].meal_smp);
 	dainfo->starting_time = started_timimg();
 	sem_post(dainfo->philos[0].meal_smp);
@@ -118,15 +114,12 @@ int algo(t_info *dainfo)
 	{
 		dainfo->philos[i].pid = fork();
 		if (dainfo->philos[i].pid == ERROR)
-		{
-			sem_wait(dainfo->philos[0].meal_smp);
-			dainfo->count_meal = 1;
-			sem_post(dainfo->philos[0].meal_smp);
-			return (ERROR);
-		}
+			return (clean(dainfo), exit(FAILED), ERROR);
 		if (dainfo->philos[i].pid == SUCCESSFUL)
 		{
+			pthread_create(&dainfo->guard, NULL, guarding, &dainfo->philos[i]);
 			pthread_create(&dainfo->philos[i].thread, NULL, datask, &dainfo->philos[i]);
+			pthread_join(dainfo->guard, NULL);
 			pthread_join(dainfo->philos[i].thread, NULL);
 			exit(SUCCESSFUL);
 		}

@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 13:28:39 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/12 22:19:47 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:44:07 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ typedef struct s_philo
 	int				fork[2]; //
 	long long		last_meal; //
 	int				health; //
+	int				count_meal; //
 	sem_t			*health_smp; //
-	sem_t			*meal_smp; //
 	t_info			*dainfo; //
 }	t_philo;
 
@@ -72,9 +72,6 @@ typedef struct s_info
 	int				time_to_sleep;//
 	int				number_of_times_each_philosopher_must_eat; //
 	int				nb_of_inputs; //
-	int				death; //
-	int				trouble; //
-	int				count_meal; //
 	long long		starting_time; //----------
 	pthread_t		guard; //----------
 	sem_t			*forks; //
@@ -103,10 +100,11 @@ int			one_philo(t_philo *philo, t_info *dainfo);
 void		free_all(t_info *dainfo);
 void		clean(t_info *dainfo);
 void		clean_smp(t_info *dainfo);
-int			guarding2(t_info *dainfo);
+int			guarding2(t_philo *philo);
 int			limited(t_philo *philo);
 int			endless(t_philo *philo);
 int			algo2(t_info *dainfo);
-char	*ft_itoa(int n);
+char		*ft_itoa(int n);
+int			smp_name(char *health_str, int i, int len);
 
 #endif

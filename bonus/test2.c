@@ -14,8 +14,8 @@ int semaphores(t_info *dainfo)
 
     // Unlink old semaphores (optional but recommended)
     sem_unlink("/forks");
-    sem_unlink("/death_mtx");
-    sem_unlink("/count_mtx");
+    sem_unlink("/death_smp");
+    sem_unlink("/count_smp");
     for (i = 0; i < dainfo->number_of_philosophers; i++) {
         snprintf(sem_name, sizeof(sem_name), "/health_%d", i);
         sem_unlink(sem_name);
@@ -29,15 +29,15 @@ int semaphores(t_info *dainfo)
         return FAILURE;
     }
 
-    dainfo->death_mtx = sem_open("/death_mtx", O_CREAT | O_EXCL, 0644, 1);
-    if (dainfo->death_mtx == SEM_FAILED) {
-        perror("sem_open /death_mtx failed");
+    dainfo->death_smp = sem_open("/death_smp", O_CREAT | O_EXCL, 0644, 1);
+    if (dainfo->death_smp == SEM_FAILED) {
+        perror("sem_open /death_smp failed");
         return FAILURE;
     }
 
-    dainfo->count_mtx = sem_open("/count_mtx", O_CREAT | O_EXCL, 0644, 1);
-    if (dainfo->count_mtx == SEM_FAILED) {
-        perror("sem_open /count_mtx failed");
+    dainfo->count_smp = sem_open("/count_smp", O_CREAT | O_EXCL, 0644, 1);
+    if (dainfo->count_smp == SEM_FAILED) {
+        perror("sem_open /count_smp failed");
         return FAILURE;
     }
 

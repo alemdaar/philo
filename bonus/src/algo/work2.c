@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/12 22:52:20 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:39:24 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ int	endless(t_philo *philo)
 
 	while (1)
 	{
-		printf ("philo : %d\n", philo->id);
 		r = eating(philo);
 		if (r == FAILED)
 			return (FAILED);
@@ -87,15 +86,18 @@ int	limited(t_philo *philo)
 		i++;
 	}
 	sem_wait(philo->dainfo->count_smp);
-	status(philo, "wsal hna", get_time(philo->dainfo));
-	if (philo->dainfo->count_meal == 0)
+	// printf ("........\n");
+	// printf ("data qbl -> %d\n", *philo->dainfo->count_meal);
+	// printf ("address : %p\n", philo->dainfo->count_meal);
+	if (philo->count_meal == 0)
 	{
-		philo->dainfo->count_meal = 1;
+		philo->count_meal = 1;
+		status(philo, "WSAL HNA 2", get_time(philo->dainfo));
+		printf ("data -> %d\n", philo->count_meal);
 		sem_post(philo->dainfo->count_smp);
-		status(philo, "HERE 1", get_time(philo->dainfo));
 		return (SUCCESSFUL);
 	}
 	sem_post(philo->dainfo->count_smp);
-	status(philo, "HERE 2", get_time(philo->dainfo));
+	// status(philo, "WSAL HNA", get_time(philo->dainfo));
 	return (SUCCESSFUL);
 }
