@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 13:28:39 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/13 14:44:07 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/14 22:36:28 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ typedef struct s_philo
 	int				health; //
 	int				count_meal; //
 	sem_t			*health_smp; //
+	sem_t			*meal_smp; //
+	sem_t			*count_smp; //
 	t_info			*dainfo; //
 }	t_philo;
 
@@ -75,8 +77,6 @@ typedef struct s_info
 	long long		starting_time; //----------
 	pthread_t		guard; //----------
 	sem_t			*forks; //
-	sem_t			*death_smp; //
-	sem_t			*count_smp; //
 	sem_t			*write; //
 	t_philo			*philos; //
 	long long		tmp_nb[5]; //
@@ -105,6 +105,6 @@ int			limited(t_philo *philo);
 int			endless(t_philo *philo);
 int			algo2(t_info *dainfo);
 char		*ft_itoa(int n);
-int			smp_name(char *health_str, int i, int len);
+// int			smp_name(char **str, int i, int len);
 
 #endif

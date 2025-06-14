@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 20:54:06 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/13 14:34:30 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/14 18:18:00 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@ void	output(char *str, int fd)
 
 void	status(t_philo *philo, char *action, long long date)
 {
-	sem_wait(philo->dainfo->death_smp);
+	sem_wait(philo->dainfo->write);
 		printf("%lld %d %s\n", date, philo->id, action);
-	sem_post(philo->dainfo->death_smp);
+	sem_post(philo->dainfo->write);
 }
 
 static	int	len_count(int n)

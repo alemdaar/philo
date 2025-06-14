@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/13 14:39:24 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/14 22:43:57 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	limited(t_philo *philo)
 		thinking(philo, get_time(philo->dainfo));
 		i++;
 	}
-	sem_wait(philo->dainfo->count_smp);
+	sem_wait(philo->count_smp);
 	// printf ("........\n");
 	// printf ("data qbl -> %d\n", *philo->dainfo->count_meal);
 	// printf ("address : %p\n", philo->dainfo->count_meal);
@@ -94,10 +94,10 @@ int	limited(t_philo *philo)
 		philo->count_meal = 1;
 		status(philo, "WSAL HNA 2", get_time(philo->dainfo));
 		printf ("data -> %d\n", philo->count_meal);
-		sem_post(philo->dainfo->count_smp);
+		sem_post(philo->count_smp);
 		return (SUCCESSFUL);
 	}
-	sem_post(philo->dainfo->count_smp);
+	sem_post(philo->count_smp);
 	// status(philo, "WSAL HNA", get_time(philo->dainfo));
 	return (SUCCESSFUL);
 }

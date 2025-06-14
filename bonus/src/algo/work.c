@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 21:12:45 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/13 13:46:02 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/14 22:52:06 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,31 @@
 
 void	*guarding(void *arg)
 {
-	t_info	*dainfo;
+	t_philo	*philo;
+	int	health;
 	int		r;
+	int		i;
 
-	dainfo = (t_info *) arg;
 	while (1)
 	{
-		r = guarding2(dainfo);
-		if (r == FAILED)
+		sem_wait(philo->count_smp);
+		write (1, ".\n", 2);
+		if (philo->count_meal == 1)
 			return (NULL);
+		sem_post(philo->count_smp);
+		sem_wait(philo->meal_smp);
+		health = (get_time(philo->dainfo) - philo->last_meal);
+		sem_post(philo->meal_smp);
+		sem_wait(philo->health_smp);
+		philo->health = health;
+		if (philo->health >= philo->dainfo->time_to_die)
+		{
+			sem_wait(philo->dainfo->write);
+			printf ("%lld %d died\n", get_time(philo->dainfo), i + 1);
+			sem_post(philo->dainfo->write);
+			return (sem_post(philo->health_smp), exit(0), NULL);
+		}
+		sem_post(philo->health_smp);
 	}
 	return (NULL);
 }
@@ -95,8 +111,10 @@ int	algo2(t_info *dainfo)
 	while (i < dainfo->number_of_philosophers)
     {
         wait(NULL);
+		write (1, "Y\n", 2);
         i++;
     }
+	write (1, "Z\n", 2);
     clean(dainfo);
 	return (SUCCESSFUL);
 }
@@ -107,9 +125,7 @@ int algo(t_info *dainfo)
 	int	i;
 
 	i = 0;
-	sem_wait(dainfo->philos[0].meal_smp);
 	dainfo->starting_time = started_timimg();
-	sem_post(dainfo->philos[0].meal_smp);
 	while (i < dainfo->number_of_philosophers)
 	{
 		dainfo->philos[i].pid = fork();
@@ -117,6 +133,7 @@ int algo(t_info *dainfo)
 			return (clean(dainfo), exit(FAILED), ERROR);
 		if (dainfo->philos[i].pid == SUCCESSFUL)
 		{
+			write (1, "B\n", 2);
 			pthread_create(&dainfo->guard, NULL, guarding, &dainfo->philos[i]);
 			pthread_create(&dainfo->philos[i].thread, NULL, datask, &dainfo->philos[i]);
 			pthread_join(dainfo->guard, NULL);

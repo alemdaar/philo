@@ -21,7 +21,7 @@ void philosopher_routine(int id) {
         sem_wait(print);
         printf("Philosopher %d is thinking\n", id);
         sem_post(print);
-        usleep(500000);  // 0.5s
+        usleep(50000);  // 0.5s
 
         // Take forks (we take two from the pool of N forks)
         sem_wait(forks);
@@ -32,7 +32,7 @@ void philosopher_routine(int id) {
         printf("Philosopher %d is eating\n", id);
         sem_post(print);
 
-        usleep(1000000);  // 1s
+        usleep(100000);  // 1s
 
         // Put down forks
         sem_post(forks);
@@ -42,7 +42,7 @@ void philosopher_routine(int id) {
         printf("Philosopher %d has finished eating\n", id);
         sem_post(print);
 
-        usleep(500000);  // 0.5s
+        usleep(500);  // 0.5s
     }
 }
 
@@ -51,8 +51,10 @@ int main(void) {
     cleanup_semaphores();
 
     // Initialize semaphores
-    forks = sem_open("/forks", O_CREAT, 0644, NUM_PHILOSOPHERS);
-    print = sem_open("/print", O_CREAT, 0644, 1);
+    char *str = "/forks";
+    char *str2 = "/print";
+    forks = sem_open(str, O_CREAT, 0644, NUM_PHILOSOPHERS);
+    print = sem_open(str2, O_CREAT, 0644, 1);
 
     if (forks == SEM_FAILED || print == SEM_FAILED) {
         perror("sem_open failed");
