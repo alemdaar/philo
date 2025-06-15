@@ -2,7 +2,7 @@ CC = cc
 
 NAME = philo
 
-CFLAGS = -Wall -Wextra -Werror -g -pthread #-fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -g -pthread
 
 SRC = main.c src/algo/time.c src/algo/work.c src/algo/work2.c src/algo/work3.c \
 	src/tools/tools.c src/parcing/parcing.c src/free/free.c src/init/init.c src/init/mutex.c
@@ -15,7 +15,7 @@ OBJ = ${SRC:.c=.o}
 
 all: ${NAME}
 
-$(NAME): $(OBJ) 
+$(NAME): $(OBJ)
 	@$(CC) $(OBJ) ${CFLAGS} -o $(NAME)
 	@echo "compiled successfully !"
 

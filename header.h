@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 22:14:02 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/10 16:40:49 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/15 20:56:27 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # define ERR_NNB "!= a number\n"
 # define ERR_NGT "Negative number in the input\n"
 # define ERR_NB0 "one of the inputs is 0\n"
+# define ERR_OVF "big number!\n"
 
 // =========
 # define SUCCESSFUL 0

@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 16:12:16 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/11 12:28:09 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/15 20:01:59 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,11 @@ static int	guarding3(t_info *dainfo)
 {
 	pthread_mutex_lock(&dainfo->count_mtx);
 	if (dainfo->count_meal == 1)
+	{
+		pthread_mutex_unlock(&dainfo->count_mtx);
 		return (SUCCESSFUL);
+	}
+	pthread_mutex_unlock(&dainfo->count_mtx);
 	return (3);
 }
 
@@ -27,7 +31,6 @@ int	guarding2(t_info *dainfo)
 	int	health;
 
 	i = guarding3(dainfo);
-	pthread_mutex_unlock(&dainfo->count_mtx);
 	if (i == SUCCESSFUL)
 		return (FAILED);
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: oelhasso <oelhasso@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 22:36:31 by oelhasso          #+#    #+#             */
-/*   Updated: 2025/06/12 22:01:10 by oelhasso         ###   ########.fr       */
+/*   Updated: 2025/06/15 19:58:59 by oelhasso         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,10 +72,8 @@ int	limited(t_philo *philo)
 	int	r;
 
 	i = 0;
-	status(philo, "dkhal", get_time(philo->dainfo));
 	while (i < philo->dainfo->number_of_times_each_philosopher_must_eat)
 	{
-		status(philo, "seeeeee", get_time(philo->dainfo));
 		r = eating(philo);
 		if (r == FAILED)
 			return (FAILED);
@@ -84,15 +82,12 @@ int	limited(t_philo *philo)
 		i++;
 	}
 	pthread_mutex_lock(&philo->dainfo->count_mtx);
-	status(philo, "wsal hna", get_time(philo->dainfo));
 	if (philo->dainfo->count_meal == 0)
 	{
 		philo->dainfo->count_meal = 1;
 		pthread_mutex_unlock(&philo->dainfo->count_mtx);
-		status(philo, "HERE 1", get_time(philo->dainfo));
 		return (SUCCESSFUL);
 	}
 	pthread_mutex_unlock(&philo->dainfo->count_mtx);
-	status(philo, "HERE 2", get_time(philo->dainfo));
 	return (SUCCESSFUL);
 }
